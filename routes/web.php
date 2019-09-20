@@ -19,10 +19,24 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('page', 'HomeController@page');
-// Route::group(['middleware'=>['auth']],function(){
-// 	Route::resource('roles','RoleController');
-// 	Route::resource('users','UserController');
-// 	Route::resource('product','productController');
+// Route::get('/user'       , 'UserController@index');
+
+// Route::get('/user/create', 'UserController@create');
+ // Route::patch('/users/update/{id}', ['uses' => 'UserController@update']);
+ Route::resource('users','UserController');
+
+Route::get('/config'     , 'ConfigController@index');
+
+Route::get('/banner'   , 'BannerController@index');
+
+Route::get('/coupon'   , 'CouponController@index');
+
+Route::get('/product'  , 'ProductController@index');
+
+Route::get('/category' , 'CategoryController@index');
+
+// Route::group(['middleware' => ['auth']], function() {
+//     Route::resource('roles','RoleController');
+//    
+//     Route::resource('products','ProductController');
 // });
-// Route::get('my-users', 'HomeController@myUsers');

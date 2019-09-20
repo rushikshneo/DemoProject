@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class HomeController extends Controller
 {
     /**
@@ -23,11 +23,13 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $users_count = DB::table('users')->count();
+        return view('home',compact('users_count'));
+
     }
 
-     public function page()
-    {
-        return view('layouts.master');
-    }
+    //  public function page()
+    // {
+    //     return view('layouts.master');
+    // }
 }

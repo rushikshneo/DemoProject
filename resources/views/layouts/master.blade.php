@@ -15,13 +15,22 @@
   <link rel="stylesheet" href="../../theme/dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+
+   
   </head>
   <body class="hold-transition sidebar-mini sidebar-collapse">
-
+ 
     <div id="wrapper">
             @include('layouts.navbar')
             @include('layouts.sidebar')
+
        <div class="content-wrapper">
+         <!--  -->
+           <div class="strip">
+            <a class="title" href="{{url('/')}}">DashBoard</a> / @yield('title')
+           </div>
+           <hr>
             @yield('content')
         </div>
          @include('layouts.footer')
