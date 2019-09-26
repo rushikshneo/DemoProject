@@ -25,7 +25,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.
@@ -35,5 +35,16 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+     protected function credentials(\Illuminate\Http\Request $request)
+    {
+        //return $request->only($this->username(), 'password');
+        return ['email' => $request->{$this->username()}, 'password' => $request->password, 'status' => 1];
+    }
+     protected function sendFailedLoginResponse(\Illuminate\Http\Request $request)
+    { 
+         $notactive = "Credentials is Not Active Please Contect Admin.";
+        return view('auth.login',compact('notactive'));
+        // return redirect('/login')->with(compact('notactive'));    
     }
 }

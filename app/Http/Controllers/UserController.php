@@ -11,21 +11,27 @@ use App\User;
 
 class UserController extends Controller
 {
-    
+     function __construct()
+    {
+         // $this->middleware('permission: user-list');
+         // $this->middleware('permission:user-create', ['only' => ['create','store']]);
+         // $this->middleware('permission:user-edit',   ['only' => ['edit','update']]);
+         // $this->middleware('permission:user-delete', ['only' => ['destroy']]);
+    }
     public function index()
     {
-        $users = User::orderBy('id','DESC')->paginate(5);
-        return view('pages.UserManagement.index',compact('users'));
-    }
 
-    
+        $users = User::orderBy('id','DESC')->paginate(5);
+        $user_role=User::select('role','id')->get();
+        // dd($user_role);
+        return view('pages.UserManagement.index',compact('users','user_role'));
+    }  
     public function create()
     {
         $roles = Role::pluck('name','name')->all();
         return view('pages.UserManagement.create',compact('roles'));
-    }
+    } 
 
-    
     public function store(Request $request)
     {
        $this->validate($request, [
@@ -44,13 +50,14 @@ class UserController extends Controller
         return redirect()->route('users.index')
                          ->with('success','User created successfully');
     }
+
     public function update(Request $request, $id)
     {
        $this->validate($request, [
             'firstname' => 'required',
             'lastname'  => 'required',
-            'email'    => 'required|email|unique:users,email,'.$id,
-            'password' => 'same:password_confirmation',
+            'email'    =>  'required|email|unique:users,email,'.$id,
+            'password' =>  'same:password_confirmation',
         ]);
 
 
@@ -60,7 +67,7 @@ class UserController extends Controller
         }else{
             $input = array_except($input,array('password'));    
         }
-
+            $input['status'] = $input['status'];
         $user = User::find($id);
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$id)->delete();
@@ -70,10 +77,6 @@ class UserController extends Controller
                          ->with('success','User updated successfully');
     }
 
-    
-  
-
-    
     public function edit($id)
     {
         $user = User::find($id);
@@ -82,10 +85,6 @@ class UserController extends Controller
         return view('pages.UserManagement.edit',compact('user','roles','userRole'));
     }
 
-    
-    
-
-    
     public function destroy($id)
     {
        User::find($id)->delete();

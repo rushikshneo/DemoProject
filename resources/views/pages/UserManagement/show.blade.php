@@ -6,5 +6,6 @@
    	<h2><b>new</b>User</h2>
   <hr>
 </div>
+
 </section>
 @endsection
