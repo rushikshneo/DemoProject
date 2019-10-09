@@ -27,7 +27,7 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>0</h3>
+                <h3>{{$config_count}}</h3>
           <a class="title1" href="{{ url('/config') }}"><p>Configuration<br>Management</p></a>
               </div>
               <div class="icon">
@@ -42,7 +42,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>0</h3>
+                <h3>{{$banner_count}}</h3>
               <a class="title1" href="{{ url('/banner') }}"> <p> Banner<br>Management</p></a>
               </div>
               <div class="icon">

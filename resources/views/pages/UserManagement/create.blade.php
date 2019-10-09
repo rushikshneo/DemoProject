@@ -11,7 +11,7 @@
 
     <div>
     <h2><b>Create</b>User</h2><hr>
-    </div>
+    </div>                                                                        
 
     <form method="POST" action="{{ route('users.store') }}">
         @csrf

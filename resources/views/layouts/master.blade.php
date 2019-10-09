@@ -16,6 +16,13 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
+<style>
+ ul.breadcrumb {
+    width: 96%;
+    height: -3px;
+    font-style: oblique;
+} 
+</style>
 
    
   </head>
@@ -26,9 +33,11 @@
             @include('layouts.sidebar')
 
        <div class="content-wrapper">
-         <!--  -->
            <div class="strip">
-            <a class="title" href="{{url('/')}}">DashBoard</a> / @yield('title')
+         <ul class="breadcrumb">
+            <li> <a class="title" href="{{url('/')}}">DashBoard</a> / <span class="breadcrumb-item active">@yield('title')
+            </span></li>
+          </ul>
            </div>
            <hr>
             @yield('content')

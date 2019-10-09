@@ -3,82 +3,93 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Image;
+use App\banner;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class BannerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+ 
     public function index()
     {
-      return view('pages.BannerManagement.index');
+
+      $banners = Banner::get();
+      return view('pages.BannerManagement.index',compact('banners'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   
     public function create()
     {
-        //
+       return view('pages.BannerManagement.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+   
     public function store(Request $request)
     {
-        //
+        $data        = $request->all();
+        $bannername  = $data['bannername'];
+        $banner = new banner;
+        if($request->hasFile('image')){
+                $image_tmp = Input::file('image');
+                if ($image_tmp->isValid()) {
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    $fileName = $bannername.'.'.$extension;
+                    $banner_path = 'images/frontendimage/banners/'.$fileName;
+                    Image::make($image_tmp)->resize(1140, 340)->save($banner_path);
+                    $banner->banner_name = $fileName; 
+                }
+            }
+            $banner->banner_url=$banner_path;
+            $banner->save();
+           return redirect()->route('banner.index')
+                         ->with('success','Banner added successfully .');
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+      $banner      = banner::find($id);
+      $banner_name = explode('.',$banner->banner_name)[0];  
+      return view('pages.BannerManagement.edit',compact('banner','banner_name'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
-    {
-        //
+    {  
+        $data = $request->all();
+        if(empty($data['bannername'])){
+            $bannername='';
+        }
+        
+        if(empty($data['image']))
+        {
+            $oldimage=banner::find($id);
+            $banner_path = $oldimage->banner_url;
+        }
+      
+        $banner = new banner;
+        if($request->hasFile('image')){
+                $image_tmp = Input::file('image');
+                if ($image_tmp->isValid()) {
+                    $extension = $image_tmp->getClientOriginalExtension();
+                    $fileName = $data['bannername'].'.'.$extension;
+                    $banner_path = 'images/frontendimage/banners/'.$fileName;
+                    Image::make($image_tmp)->resize(1140, 340)->save($banner_path);
+                }
+            }
+            Banner::where('id',$id)->update(['banner_name'=>$data['bannername'],'banner_url'=>$banner_path]);
+
+            return redirect()->back()->with('flash_message_success','Banner has been edited Successfully');
+           
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+  
     public function destroy($id)
     {
-        //
+       $banner = banner::find($id); 
+       $banner_path = explode('/', $banner->banner_url)[3];
+       unlink(public_path() .'/'. $banner->banner_url);
+       banner::where(['id'=>$id])->delete();
+       return redirect()->route('banner.index')->with('flash_message_success', 'Banner has been deleted successfully');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\User;
-
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -20,7 +20,10 @@ class UserController extends Controller
     }
     public function index()
     {
-
+        //  if (! Gate::allows('user-list')) {
+        //     return abort(401);
+        // }
+            
         $users = User::orderBy('id','DESC')->paginate(5);
         $user_role=User::select('role','id')->get();
         // dd($user_role);
@@ -84,10 +87,10 @@ class UserController extends Controller
         $userRole = $user->roles->pluck('name','name')->all();
         return view('pages.UserManagement.edit',compact('user','roles','userRole'));
     }
-
+    
     public function destroy($id)
     {
-       User::find($id)->delete();
+        User::find($id)->delete();
         return redirect()->route('users.index')
                         ->with('success','User deleted successfully');
     }

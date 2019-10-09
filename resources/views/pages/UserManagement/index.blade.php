@@ -109,9 +109,8 @@ margin-top: 3px;
           @if( Auth::user()->role =="SuperAdmin")
           <form action="{{url('users', [$user->id])}}" method="POST">
           {{method_field('DELETE')}}
-
           @csrf
-          <input type="submit" class="btn btn-danger btn-sm" value="Delete"onclick="return confirm('Are you sure?')"/>
+          <input type="submit" class="btn btn-danger btn-sm" value="Delete" onclick="return confirm('Are you sure?')"/>
 
           </form>
           @endif  
