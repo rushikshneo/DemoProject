@@ -52,6 +52,7 @@ class BannerController extends Controller
       $banner      = banner::find($id);
       $banner_name = explode('.',$banner->banner_name)[0];  
       return view('pages.BannerManagement.edit',compact('banner','banner_name'));
+
     }
 
     public function update(Request $request, $id)
@@ -79,7 +80,8 @@ class BannerController extends Controller
             }
             Banner::where('id',$id)->update(['banner_name'=>$data['bannername'],'banner_url'=>$banner_path]);
 
-            return redirect()->back()->with('flash_message_success','Banner has been edited Successfully');
+            return redirect()->route('banner.index')
+                         ->with('success','Banner has been edited Successfully.');
            
     }
 
@@ -90,6 +92,9 @@ class BannerController extends Controller
        $banner_path = explode('/', $banner->banner_url)[3];
        unlink(public_path() .'/'. $banner->banner_url);
        banner::where(['id'=>$id])->delete();
-       return redirect()->route('banner.index')->with('flash_message_success', 'Banner has been deleted successfully');
+
+       return redirect()->route('banner.index')
+                         ->with('success','Banner has been deleted successfully.');
+
     }
 }

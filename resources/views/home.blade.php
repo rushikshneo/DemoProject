@@ -56,7 +56,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>0</h3>
+                <h3>{{$categories_count}}</h3>
             <a class="title1" href="{{ url('/category') }}"><p>Category<br> Management</p></a>
               </div>
               <div class="icon">

@@ -95,21 +95,6 @@ class RoleController extends Controller
         return view('pages.RoleManagement.edit',compact('role','permission','rolePermissions'));
     }
 
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         DB::table("roles")->where('id',$id)->delete();

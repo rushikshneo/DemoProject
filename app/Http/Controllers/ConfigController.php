@@ -24,7 +24,7 @@ class ConfigController extends Controller
     public function store(Request $request)
     {
         $this->validate($request,[
-                'define_key'   => 'required',
+                'define_key'    => 'required',
                 'define_values' => 'required',
             ]      
         );
