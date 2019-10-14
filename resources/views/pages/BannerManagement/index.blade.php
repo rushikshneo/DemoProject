@@ -35,8 +35,6 @@ img.banner {
     width: 50px;
 }
 </style>
-
-   <!--  <div> -->
     @if ($message = Session::get('success'))
     <div class="alert alert-success alert-block">
       <button type="button" class="close" data-dismiss="alert" style="color: white;">×</button> 

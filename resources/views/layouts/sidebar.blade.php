@@ -1,4 +1,14 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<style>
+   .sidebar1{
+    position: fixed;
+     width: 100%;
+  z-index: 1;
+   }
+</style>
+
+<span class="sidebar1">
+<aside class="main-sidebar sidebar-dark-primary elevation-4 ">
+
     <!-- Brand Logo -->
     <a href="../../index3.html" class="brand-link">
       <img src="../../theme/dist/img/AdminLTELogo.png"
@@ -83,3 +93,4 @@
     </div>
     <!-- /.sidebar -->
   </aside>
+</span>

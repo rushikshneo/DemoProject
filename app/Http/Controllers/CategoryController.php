@@ -4,38 +4,62 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category;
-
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller
 {
    
     public function index()
     {
+       if (! Gate::allows('category-list')) {
+            return abort(401);
+        }
           $category=Category::get();
           return view('pages.CategoryManagement.index', compact('category'));
     }
 
-    
     public function create()
     {
          $levels = Category::where(['parent_id' => 0])->get();
          return view('pages.CategoryManagement.create')->with(compact('levels'));
     }
 
-    
     public function store(Request $request)
     {
         if($request->isMethod('post'))
         { 
+
+           $validator = Validator::make($request->all(), [
+            'categoryname'            => 'required',
+            'categorylevel'           => 'required',
+            'categorydescription'     => 'required',
+            'status'                  => 'required',
+         ],
+          [
+          'categoryname.required'=>'This field is required .',
+          'categorylevel.required'=>'This field is required .',
+          'categorydescription.required'=>'This field is required .',
+          'status.required'=>'This field is required .',          
+          ]
+       );
+
+
+        if ($validator->fails()) {
+                  return redirect('category/create')
+                        ->withErrors($validator)
+                        ->withInput();
+        }
             $category                = new Category;
-            $category['name']        = $request->cat_name;
-            $category['description'] = $request->cat_desc;
-            $category['parent_id']   = $request->cat_level;
+            $category['name']        = $request->categoryname;
+            $category['description'] = $request->categorydescription;
+            $category['parent_id']   = $request->categorylevel;
             $category['status']      = $request->status;
             $category->save();
-        return redirect()->route('category.index')
+         
+          return redirect()->route('category.index')
                          ->with('success','category should be
                                  added successfully.');
-        }
+         }
 
     }
 
@@ -46,7 +70,6 @@ class CategoryController extends Controller
         
     }
 
-   
     public function edit($id)
     {
        $category=Category::find($id);

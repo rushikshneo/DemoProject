@@ -67,7 +67,7 @@ a.btn.btn-primary.btn-sm.add {
          <td>
 	           <a class="btn btn-info btn-sm" href="{{route('category.edit',$cat->id)}}"> Edit</a>
 	          <!-- <div class="button"> -->
-	          <form action="{{route('category.destroy',$cat->id)}}" method=" " >
+	          <form action="{{route('category.destroy',$cat->id)}}" method="POST" >
 	          @csrf
             {{method_field('DELETE')}}
 	          <input type="submit" class="btn btn-danger btn-sm just" value ="Delete" onclick="return confirm('Are you sure?')"/>

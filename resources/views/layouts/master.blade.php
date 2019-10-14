@@ -26,11 +26,11 @@
 
    
   </head>
-  <body class="hold-transition sidebar-mini sidebar-collapse">
+  <body class="hold-transition sidebar-mini sidebar-collapse fixed">
  
-    <div id="wrapper">
             @include('layouts.navbar')
             @include('layouts.sidebar')
+    <div id="wrapper">
 
        <div class="content-wrapper">
            <div class="strip">

@@ -33,7 +33,8 @@ class ConfigController extends Controller
          $user = configure::create($input);
        
         return redirect()->route('config.index')
-                         ->with('success','Configuration key added successfully .');
+                         ->with('success',
+                            'Configuration key added successfully .');
     }
 
     
