@@ -29,7 +29,6 @@ class RoleController extends Controller
         $roles = Role::orderBy('id','DESC')->paginate(5);
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
             ->orderBy('id')->get();
-            
          return view('pages.RoleManagement.index',compact('roles','rolePermissions'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
@@ -76,8 +75,6 @@ class RoleController extends Controller
         $rolePermissions = Permission::join("role_has_permissions","role_has_permissions.permission_id","=","permissions.id")
             ->where("role_has_permissions.role_id",$id)
             ->get();
-
-
         return view('pages.RoleManagement.show',compact('role','rolePermissions'));
     }
 
@@ -86,12 +83,11 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role = Role::find($id);
-        $permission = Permission::get();
+        $permission      = Permission::get();
         $rolePermissions = DB::table("role_has_permissions")
                            ->where("role_has_permissions.role_id",$id)
                            ->pluck('role_has_permissions.permission_id',
                            'role_has_permissions.permission_id')->all();
-
         return view('pages.RoleManagement.edit',compact('role','permission','rolePermissions'));
     }
 

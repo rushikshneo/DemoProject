@@ -5,6 +5,11 @@ namespace App\Http\Controllers;
 use App\Product;
 use Illuminate\Http\Request;
 use App\Category;
+use App\productattribute;
+use App\productattributevalue;
+use Illuminate\Support\Facades\Validator;
+use Image;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 { 
@@ -27,7 +32,9 @@ class ProductController extends Controller
     public function create()
     {
         $category = Category::get();
-        return view('pages.ProductManagement.create',compact('category'));
+        $product_attri =productattribute::get();
+        // $product_attri_values=productattributevalue::get();            
+        return view('pages.ProductManagement.create',compact('category','product_attri','product_attri_values'));
     }
 
 
@@ -38,14 +45,66 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        dd($request->all());
+    { 
+      $validator = Validator::make($request->all(), 
+        [
+            'category_id'           => 'required',
+            'productname'           => 'required',
+            'productshortdesc'      => 'required',
+            'productlongdesc'       => 'required',
+            'productprice'          => 'required',
+            'productspecialprice'   => 'required',
+            'productspicalpricefrom'=> 'required',
+            'productspecialpriceto' => 'required',
+            'productquantity'       => 'required',
+            'metatitle'             => 'required',
+            'metadesc'              => 'required',
+            'metakeyword'           => 'required',
+            'status'                => 'required',
+            'productimagename'      => 'required',
+            'image'                 => 'required',
+        ],
+         [
+            'category_id.required'           =>'This field is required.',
+            'productname.required'           =>'This field is required.',
+            'productshortdesc.required'      =>'This field is required.',
+            'productlongdesc.required'       =>'This field is required.',
+            'productprice.required'          =>'This field is required.',
+            'productspecialprice.required'   =>'This field is required.',
+            'productspicalpricefrom.required'=>'This field is required.',
+            'productspecialpriceto.required' =>'This field is required.',
+            'productquantity.required'       =>'This field is required.',
+            'metatitle.required'             =>'This field is required.',
+            'metadesc.required'              =>'This field is required.',
+            'metakeyword.required'           =>'This field is required.',
+            'status.required'                =>'This field is required.',
+            'productimagename.required'      =>'This field is required.',
+            'image.required'                 =>'This field is required.',
 
-        request()->validate([
-            'name' => 'required',
-            'detail' => 'required',
-        ]);
+        ]
+    );
 
+    if ($validator->fails()) {
+      return redirect('product/create')
+            ->withErrors($validator)
+            ->withInput();
+    }
+    
+
+   //  $banner = new banner;
+   // if($request->hasFile('image')){
+   //              $image_tmp = Input::file('image');
+   //              if ($image_tmp->isValid()) {
+   //                  $extension = $image_tmp->getClientOriginalExtension();
+   //                  $fileName = $bannername.'.'.$extension;
+   //               $banner_path = 'images/frontendimage/product_image/'.$fileName;
+   //             Image::make($image_tmp)->resize(1140, 340)->save($banner_path);
+   //                  $banner->banner_name = $fileName; 
+   //              }
+   //          }
+
+
+   
 
         Product::create($request->all());
 

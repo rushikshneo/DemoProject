@@ -17,6 +17,9 @@ a.btn.btn-primary.btn-sm.add {
     margin-bottom: 15px;
     margin-left: 85%;
 }
+a.btn.btn-primary.btn-sm.attri_add {
+    margin-top: -94px;
+}
 	</style>
 @if ($message = Session::get('success'))
     <div class="alert alert-success alert-block">
@@ -25,8 +28,10 @@ a.btn.btn-primary.btn-sm.add {
       <strong>{{ $message }}</strong>
     </div>
 @endif
-  <a class="btn btn-primary btn-sm add" href="{{ route('product.create')}}" class="btn_add">Add Product</a>
-  
+  <a class="btn btn-primary btn-sm add" href="{{ route('product.create')}}" 
+  class="btn_add">Add Product</a>
+<a class="btn btn-primary btn-sm attri_add" href="{{route('product_attri.index')}}"
+  class="btn_add">Product Attributtes</a>
     <table class="table table-striped projects">
         <thead>
             <tr>

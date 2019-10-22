@@ -1,10 +1,11 @@
 <style>
-   .sidebar1{
+/*   .sidebar1{
     position: fixed;
      width: 100%;
   z-index: 1;
    }
-</style>
+*/ 
+  </style>
 
 <span class="sidebar1">
 <aside class="main-sidebar sidebar-dark-primary elevation-4 ">

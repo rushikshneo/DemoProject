@@ -43,7 +43,6 @@ class CategoryController extends Controller
           ]
        );
 
-
         if ($validator->fails()) {
                   return redirect('category/create')
                         ->withErrors($validator)
@@ -64,7 +63,8 @@ class CategoryController extends Controller
     }
 
     public function show($id)
-    {   $main_catname = Category::find($id);
+    {  
+        $main_catname = Category::find($id);
         $category = Category::where('parent_id','=', $id)->get();
         return view('pages.CategoryManagement.show', compact('category','main_catname'));
         
@@ -72,9 +72,14 @@ class CategoryController extends Controller
 
     public function edit($id)
     {
-       $category=Category::find($id);
-       $levels = Category::where(['parent_id' => 0])->get();
-       return view('pages.CategoryManagement.edit',compact('category','levels'));
+      try {
+            $category=Category::findOrFail($id);
+           } catch (ModelNotFoundException $exception) {
+            return back()->withError($exception->getMessage())->withInput();
+          }
+        $levels = Category::where(['parent_id' => 0])->get();
+        return view('pages.CategoryManagement.edit',compact('category','levels'));
+       
     }
 
  
@@ -95,4 +100,13 @@ class CategoryController extends Controller
                          ->with('success','Category has been 
                                 deleted successfully.');
     }
+
+    public function render($request, Exception $exception)
+   {
+    if ($exception instanceof CustomException) {
+        return response()->abort(403, 'Unauthorized action.');
+      }
+
+    return parent::render($request, $exception);
+   }
 }

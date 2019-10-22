@@ -15,7 +15,9 @@
   <link rel="stylesheet" href="../../theme/dist/css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
+  
+<link rel="stylesheet" href="../../theme/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="../../theme/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <style>
  ul.breadcrumb {
     width: 96%;
@@ -28,9 +30,9 @@
   </head>
   <body class="hold-transition sidebar-mini sidebar-collapse fixed">
  
+    <div id="wrapper">
             @include('layouts.navbar')
             @include('layouts.sidebar')
-    <div id="wrapper">
 
        <div class="content-wrapper">
            <div class="strip">

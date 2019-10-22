@@ -22,10 +22,12 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('roles','RoleController');
     Route::resource('users','UserController');
 });
-  Route::resource('config'  ,'ConfigController');
-  Route::resource('banner'  ,'BannerController');
-  Route::resource('category','CategoryController');
-  Route::resource('product','ProductController');
+  Route::resource('config'       ,'ConfigController');
+  Route::resource('banner'       ,'BannerController');
+  Route::resource('category'     ,'CategoryController');
+  Route::resource('product'      ,'ProductController');
+  Route::resource('product_attri','ProductAttributeController');
+  
 // Route::get('/config'     ,'ConfigController@index');
 // Route::get('/banner'   , 'BannerController@index');
 Route::get('/coupon'   , 'CouponController@index');
