@@ -14,6 +14,9 @@ button#add {
     color: red;
     font-weight: bold;
 }
+button.btn.btn-danger.btn_remove {
+    margin-top: 22px;
+}
 </style>
 <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 <div>
@@ -81,12 +84,10 @@ button#add {
       $('#add').click(function(){  
            i++;  
           $('#dynamic_field').append('<tr id="row'+i+
-           	                     '" class="dynamic-added"><td><div class="col"><input type="text" name="values[]" placeholder="Enter values" class="form-control" /></div>	</div></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
+           	                     '" class="dynamic-added"><td><div class="col"><input type="text" name="values[]" placeholder="Enter values" class="form-control" /></div>	</div></td><td><button type="button" name = "remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
       });  
-
-
       $(document).on('click', '.btn_remove', function(){ 
-           var button_id = $(this).attr("id");  
+           var button_id = $(this).attr("id");
            $('#row'+button_id+'').remove();  
       });
 

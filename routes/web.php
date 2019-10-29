@@ -28,6 +28,7 @@ Route::group(['middleware' => ['auth']], function() {
   Route::resource('product'      ,'ProductController');
   Route::resource('product_attri','ProductAttributeController');
   
+  Route::get('/attribute','ProductController@function_delete');
 // Route::get('/config'     ,'ConfigController@index');
 // Route::get('/banner'   , 'BannerController@index');
 Route::get('/coupon'   , 'CouponController@index');

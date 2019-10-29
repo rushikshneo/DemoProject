@@ -2,14 +2,19 @@
 
 
 namespace App\Http\Controllers;
-use App\Product;
 use Illuminate\Http\Request;
-use App\Category;
-use App\productattribute;
-use App\productattributevalue;
 use Illuminate\Support\Facades\Validator;
 use Image;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Input;
+use App\Product;
+use App\Category;
+use App\productattribute;
+use App\productattributevalue;
+use App\product_attributes_assoc;
+use App\product_categories;
+use App\product_image;
+use Auth;
 
 class ProductController extends Controller
 { 
@@ -23,18 +28,12 @@ class ProductController extends Controller
         //     ->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $category = Category::get();
         $product_attri =productattribute::get();
         // $product_attri_values=productattributevalue::get();            
-        return view('pages.ProductManagement.create',compact('category','product_attri','product_attri_values'));
+        return view('pages.ProductManagement.create',compact('category','product_attri'));
     }
 
 
@@ -46,8 +45,10 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     { 
+         // dd($request->all());
+       
       $validator = Validator::make($request->all(), 
-        [
+          [
             'category_id'           => 'required',
             'productname'           => 'required',
             'productshortdesc'      => 'required',
@@ -63,6 +64,8 @@ class ProductController extends Controller
             'status'                => 'required',
             'productimagename'      => 'required',
             'image'                 => 'required',
+            'attri_select'          => 'required',
+            'attri_val'             => 'required',
         ],
          [
             'category_id.required'           =>'This field is required.',
@@ -80,38 +83,76 @@ class ProductController extends Controller
             'status.required'                =>'This field is required.',
             'productimagename.required'      =>'This field is required.',
             'image.required'                 =>'This field is required.',
+            'attri_select.required'          =>'This field is required.',
+            'attri_val.required'             =>'This field is required.',
 
         ]
     );
+            if ($validator->fails()) {
+              return redirect('product/create')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+                $product = new Product ;     
+                $product['name']                = $request->productname;
+                $product['short_description']   = $request->productshortdesc;
+                $product['long_description']    = $request->productlongdesc;
+                $product['price']               = $request->productprice;
+                $product['special_price']       = $request->productspecialprice;
+                $product['special_price_from']  = $request->productspicalpricefrom;
+                $product['special_price_to']    = $request->productspecialpriceto;
+                $product['status']              = $request->status;
+                $product['quanity']             = $request->productquantity;
+                $product['meta_title']          = $request->metatitle;
+                $product['meta_description']    = $request->metadesc;
+                $product['meta_keywords']       = $request->metakeyword;
+                $product['created_by']          = $request->productprice;
+                $product->save();
 
-    if ($validator->fails()) {
-      return redirect('product/create')
-            ->withErrors($validator)
-            ->withInput();
-    }
-    
+                  $product_cat = new product_categories;
+                  $product_cat->product_id = $product->id;
+                  $product_cat->category_id = $request->category_id;
+                  $product_cat->save();
 
-   //  $banner = new banner;
-   // if($request->hasFile('image')){
-   //              $image_tmp = Input::file('image');
-   //              if ($image_tmp->isValid()) {
-   //                  $extension = $image_tmp->getClientOriginalExtension();
-   //                  $fileName = $bannername.'.'.$extension;
-   //               $banner_path = 'images/frontendimage/product_image/'.$fileName;
-   //             Image::make($image_tmp)->resize(1140, 340)->save($banner_path);
-   //                  $banner->banner_name = $fileName; 
-   //              }
-   //          }
+                $product_image      = new product_image;
+                $product_image_name = $request->productimagename;
+                foreach ($request->file('image') as $value) {
+                      if ($value->isValid()) {
+                            $extension = $value->getClientOriginalExtension();
+                            $fileName = $product_image_name.'.'.$extension;
+                            $productimage_path = 'images/frontendimage/banners/'.$fileName;
+                            Image::make($value)->resize(1140, 340)
+                                ->save($productimage_path);
+                             $product_image->product_id = $product->id;
+                             $product_image->image_name = $fileName; 
+                             $product_image->image_url  = $productimage_path;
+                             $product_image->created_by = Auth::user()->id;
+                             $product_image->save();
+ 
+                        }
+
+                } 
+                  $product_asso = new  product_attributes_assoc;
+                foreach ($request->attri_val as  $value) {
+                  $product_asso->product_id                 = $product->id;
+                  $product_asso->product_attribute_id       = $request->attri_select;
+                  $product_asso->product_attribute_value_id = $value;
+                  $product_asso->save();
+                }
 
 
-   
 
-        Product::create($request->all());
-
-
-        return redirect()->route('pages.ProductManagement.index')
+        return redirect()->route('product.index')
                         ->with('success','Product created successfully.');
     }
+
+
+   public function function_delete(Request $request){
+        $id     = $request->id;
+        $value  = productattributevalue::select('product_attribute_id','attribute_value','id')->where('productattributevalues.product_attribute_id',$id)->get(); 
+        // dd($value); 
+        return response()->json($value);
+   }
 
 
     /**
