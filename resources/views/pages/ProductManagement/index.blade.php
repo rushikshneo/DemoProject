@@ -20,6 +20,10 @@ a.btn.btn-primary.btn-sm.add {
 a.btn.btn-primary.btn-sm.attri_add {
     margin-top: -94px;
 }
+img.product_img {
+    height: 46px;
+    width: 50px;
+}
 	</style>
 @if ($message = Session::get('success'))
     <div class="alert alert-success alert-block">
@@ -35,29 +39,23 @@ a.btn.btn-primary.btn-sm.attri_add {
     <table class="table table-striped projects">
         <thead>
             <tr>
-              <th>
+               <th style="width:20px;">
                    Product id
-              </th>
-              <th>
+               </th>
+               <th style="width:20px;">
                   Category id
-              </th>
-              <th >
-                Category Name
-              </th>   
-                <th>
+               </th>
+               <th>
+                 Category Name
+               </th>   
+               <th>
                   Procuct Name
-                </th>      
-              <th>
-              	 Procuct Code
-              </th>
-                <th>
-              	 Procuct Color
+               </th>      
+              <th >
+                 Image
               </th>
               <th>
               	 Prize
-              </th>
-              <th>
-              	 Image
               </th>
                <th>
               	 Action
@@ -65,18 +63,28 @@ a.btn.btn-primary.btn-sm.attri_add {
             </tr>
         </thead>
         <tbody>
-       
+       @foreach($products as $product)
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td>{{$product->id}}</td>
+
+          @foreach($products_cat as $cat)
+            @if($product->id == $cat->product_id)
+            <td>{{$cat->category_id}}</td>
+             <td>{{$cat->name}}</td>
+            @endif
+          @endforeach
+
+            <td>{{$product->name}}</td>
+
+           @foreach($product_image as $img)
+            @if($product->id == $img->id)
+              <td><img class="product_img" src="{{$img->image_url}}"></td>
+            @endif
+           @endforeach
+
+          <td>{{$product->price}}</td>
           <td>
-	           <a class="btn btn-info btn-sm" href=""> Edit</a>
+	           <a class="btn btn-info btn-sm" href="{{route('product.edit',$product->id)}}"> Edit</a>
 	          <!-- <div class="button"> -->
 	          <form action="" method="POST" >
 	          @csrf
@@ -87,6 +95,7 @@ a.btn.btn-primary.btn-sm.attri_add {
           </td> 
   
         </tr>
+        @endforeach
       </tbody>
     </table>
 

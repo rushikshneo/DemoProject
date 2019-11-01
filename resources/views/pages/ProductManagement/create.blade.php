@@ -20,10 +20,9 @@ button#add {
    	<h2><b>Create</b>Product</h2>
   <hr>
 </div>
-
-  <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
+ <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
-<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
 <div class="card card-default">
 <div class="card-body">
@@ -243,7 +242,7 @@ button#add {
     <div class="col">
     <div class="form-group">
         <label>* Choose Attribute :</label>
-      <select class="val form-control" name="attri_select" id="attri_select_1">
+      <select class="val form-control" name="attri_select[]" id="attri_select_1">
            <option value="">Select</option>
             @foreach($product_attri as $attri)
          <option value="{{$attri->id}}">{{$attri->name}}
@@ -256,7 +255,7 @@ button#add {
         <label for="exampleInputEmail1">* Choose Attribute Value :<br>
       <small>Multiple Attribute also selected using ctrl </small>
         </label>
-        <select class="form-control" id="attri_val_1" multiple  name="attri_val[]">
+        <select class="form-control" id="attri_val_1"   name="attri_val[]">
             <option value="">Select</option>
         </select>
     </div>
@@ -296,7 +295,7 @@ button#add {
 
 $('#add_attri').click(function(){
              i++;  
-      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group"> <select class="form-control" id="attri_val_'+i+'" multiple name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
+      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select[]"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group"> <select class="form-control" id="attri_val_'+i+'"  name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
     });
 
  $(document).on('change','.val',function() {

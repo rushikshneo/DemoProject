@@ -28,7 +28,7 @@ button.btn.btn-danger.btn_remove {
  	
  	<div class="form-row">
 		<div class="col">
-			<table class="table table-bordered" >  
+			<table class="table table-bordered">  
 		<tr>  
 			<td>
 			<label for="exampleInputEmail1">Product Attribute Name :</label>
