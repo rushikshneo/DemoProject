@@ -79,5 +79,6 @@ a.btn.btn-primary.btn-sm.add {
         @endforeach
         </tbody>
     </table>
+       
 </section>
 @endsection

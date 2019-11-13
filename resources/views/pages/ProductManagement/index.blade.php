@@ -40,9 +40,6 @@ img.product_img {
         <thead>
             <tr>
                <th style="width:20px;">
-                   Product id
-               </th>
-               <th style="width:20px;">
                   Category id
                </th>
                <th>
@@ -52,7 +49,7 @@ img.product_img {
                   Procuct Name
                </th>      
               <th >
-                 Image
+                 Procuct Image
               </th>
               <th>
               	 Prize
@@ -64,29 +61,27 @@ img.product_img {
         </thead>
         <tbody>
        @foreach($products as $product)
-        <tr>
-          <td>{{$product->id}}</td>
-
+        <tr >
+      
           @foreach($products_cat as $cat)
             @if($product->id == $cat->product_id)
             <td>{{$cat->category_id}}</td>
              <td>{{$cat->name}}</td>
             @endif
           @endforeach
-
             <td>{{$product->name}}</td>
-
-           @foreach($product_image as $img)
-            @if($product->id == $img->id)
-              <td><img class="product_img" src="{{$img->image_url}}"></td>
+              <td>
+           @foreach($product['images'] as $img)
+            @if($product->id == $img->product_id)
+                <img class="product_img" src="{{$img->image_url}}">
             @endif
            @endforeach
-
-          <td>{{$product->price}}</td>
+              </td>
+            <td>{{$product->price}}</td>
           <td>
 	           <a class="btn btn-info btn-sm" href="{{route('product.edit',$product->id)}}"> Edit</a>
 	          <!-- <div class="button"> -->
-	          <form action="" method="POST" >
+	          <form action="{{route('product.destroy',$product->id)}}" method="POST" >
 	          @csrf
             {{method_field('DELETE')}}
 	          <input type="submit" class="btn btn-danger btn-sm just" value ="Delete" onclick="return confirm('Are you sure?')"/>
@@ -98,6 +93,7 @@ img.product_img {
         @endforeach
       </tbody>
     </table>
+        {{$products->links()}}
 
 </section>
 @endsection

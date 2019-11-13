@@ -6,10 +6,14 @@
    	<h2><b>Edit</b>Product</h2>
   <hr>
 </div>
+<style>
+ 
+</style>
  <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 <div class="card card-default">
 <div class="card-body">
-  <form action="{{route('product.store')}}" method="POST" enctype="multipart/form-data">
+<form action="{{route('product.update',$product->id)}}" method="POST" enctype="multipart/form-data">
+     {{ method_field('PATCH') }}
   @csrf
 
   <!-- choose category -->
@@ -20,17 +24,18 @@
           <optgroup  label="Main Category">
             <option value="">Select</option>
             @foreach($category as $cat)
-               @if ($cat->parent_id == old('parent_id', $products_cat->category_id))
+               @if ($cat->id == old('parent_id', $products_cat->category_id))
                 selected="selected"
                @endif
               @if($cat->parent_id == 0)
-                <option value="{{$cat->parent_id}}" {{( $cat->parent_id == $products_cat->category_id) ? 'selected' : '' }}>{{$cat->name}}</option>
+               <option value="{{$cat->id}}" {{( $cat->id == $products_cat->category_id) ? 'selected' :''}}>{{$cat->name}}</option>
               @else
-                <option value="{{$cat->parent_id}}" {{( $cat->parent_id == $products_cat->category_id) ? 'selected' : '' }}>-> {{$cat->name}}</option>
+                <option value="{{$cat->id}}" {{( $cat->id == $products_cat->category_id) ? 'selected':''}}>-> {{$cat->name}}</option>
               @endif
             @endforeach
           </optgroup>
         </select>
+
       </div>
     </div>
     <br>
@@ -128,9 +133,9 @@
     <div class="col">
       <label for="exampleInputEmail1">*Status:</label>
       <div class="form-control" >
-        <input  type="radio" value="0" name="status">
+        <input  type="radio" value="0"  name="status" {{($product->status == 0) ? 'checked' : '' }} >
         <label>Active</label> 
-        <input  type="radio"  value="1" name="status">
+        <input  type="radio"  value="1" name="status" {{($product->status == 1) ? 'checked' : '' }} >
         <label>InActive</label>
       </div>
         @if($errors->has('status'))
@@ -188,13 +193,16 @@
     
 </div>
 
- <hr>
-  <div class="form-row">
+ <!-- <hr> -->
+ 
+<!--   <div class="form-row">
      <div class="col">
+          @foreach($product->images as $image)
       <div class="form-group">
           <label for="exampleInputEmail1">*Product Image Name:</label>
-          <input type="text" value="{{$image_name}}" name="productimagename" class="form-control" id="productimagename" placeholder="Enter Product Image Name" value="{{old('productimagename')}}">
+          <input type="text"  name="productimagename[]" class="form-control" id="productimagename" value="{{$image->image_name}}" placeholder="Enter Product Image Name" value="{{old('productimagename')}}">
        </div>
+          @endforeach
          @if($errors->has('productimagename'))
            <div  class="error">
              <br> {{$errors->first('productimagename')}}
@@ -202,44 +210,49 @@
           @endif
     </div>
     <div class="col image">
-    	<img src="{{URL::asset($product_image->image_url)}}" style="height: 100px;margin-left:100px;">
+     @foreach($product->images as $url)
+    	<img src="{{URL::asset($url->image_url)}}"style="height: 100px;margin-left:100px;">
+      @endforeach
     </div>
     <div class="col">
+      @foreach($product->images  as $url)
         <div class="form-group">
-          <label for="exampleInputFile">* Choose Product Image :  </label>
+          <label for="exampleInputFile">*Update Product Image :  </label>
             <div class="input-group">
               <div class="custom-file">
                 <input type="file" name="image[]" class="form-control btn" multiple="multiple">
               </div>
             </div>
           </div>
+        @endforeach
         @if($errors->has('image'))
         <div  class="error">
           <br> {{$errors->first('image')}}
         </div>
         @endif
+   <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
     </div>
-   <div class="col">
-     <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
-   </div>
-  </div>
-<div id="extra">
-</div>
-<hr>
+  </div> -->
 
-    	@foreach($product_attri_asso as $product_attris)
+   
+<!-- <div id="extra">
+</div> -->
+<!-- <hr> -->
+<!-- @foreach($product_attri_asso as $product_attris)
+@if($product_attris->product_id == $product->id)
+
+
   <div class="form-row">
     <div class="col">
     <div class="form-group">
-   <!--  	  {{$product_attris}}
-    	 --><label>* Choose Attribute :</label>
-      <select class="val form-control" name="attri_select" id="attri_select_1">
+      <label>* Choose Attribute :</label>
+      <select class="val form-control" name="attri_select[]" id="attri_select_1">
            <option value="">Select</option>
             @foreach($product_attri as $attri)
              @if ($attri->id == old('id',$product_attris->product_attribute_id))
                 selected="selected"
                @endif
-         <option value="{{$attri->id}}" {{( $attri->id == $product_attris->product_attribute_id) ? 'selected' :''}}>{{$attri->name}}
+         <option value="{{$attri->id}}"  {{( $attri->id == $product_attris->product_attribute_id) ? 'selected' :''}}>{{$attri->name}}
           </option>
           @endforeach
         </select>
@@ -248,35 +261,41 @@
     <div class="col">
         <label for="exampleInputEmail1">* Choose Attribute Value :
         </label>
-         <!--   @foreach($attribute_val['attribute'] as $val)
-             @foreach($product_attri as $attri)
-             @endforeach
-           @endforeach -->
         <select class="form-control value" id="attri_val_1" name="attri_val[]">
-            <option value="">Select</option>
-  
-        </select>
+          <option value="">Select</option>
+            @foreach($product_att_value as $value)
 
+              @foreach($product_attri as $attri)
+
+                @if($attri->id == $value->product_attribute_id && $attri->id == $product_attris->product_attribute_id)
+
+                 @if ($value->id == old('id',$product_attris->product_attribute_value_id))
+
+                selected="selected"
+
+               @endif
+               <option value="{{$value->id}}" {{( $value->id == $product_attris->product_attribute_value_id) ? 'selected' :''}} >{{$value->attribute_value}}</option>
+                @endif
+              @endforeach
+            @endforeach
+        </select>
     </div>
   </div>
-        @endforeach
+  @endif
+        @endforeach -->
 
-         <div class="col">
+       <!--   <div class="col">
      <button type="button" name="add" id="add_attri" class="btn btn-success">Add More</button>
-   
- 		
-
-    
     </div>
    <hr>
     <div class="col" id="attri_values">
-    </div>
+    </div> -->
 
 
      <div class="form-row" style="margin-bottom: 50px; margin-top: 20px;margin-left: 40%;">
           <div class="col-4" >
             <button type="submit" class="btn btn-primary">
-             {{ __('Submit') }}
+             {{ __('Update') }}
             </button>
           </div>
     </div>
@@ -300,7 +319,7 @@
 
 $('#add_attri').click(function(){
              i++;  
-      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group"> <select class="form-control" id="attri_val_'+i+'" multiple name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
+      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select[]"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group"> <select class="form-control" id="attri_val_'+i+'"  name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
     });
 
  $(document).on('change','.val',function() {

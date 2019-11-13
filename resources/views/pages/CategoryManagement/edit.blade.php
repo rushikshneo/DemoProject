@@ -28,9 +28,9 @@
                <option  value="0"
                 @if($category->parent_id == 0) selected 
                  @endif  >Main Catagory</option>
-                 @if($category->parent_id!=0)
+                  @if($category->parent_id!=0)
                @foreach($levels as $level)
-               <option  value="{{ $level->id }}"
+               <option  value="{{$level->id}}"
                 @if($level->id == $category->parent_id) selected 
                  @endif  >{{$level->name}}</option>
 

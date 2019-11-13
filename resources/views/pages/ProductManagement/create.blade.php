@@ -36,13 +36,7 @@ button#add {
         <select class="form-control" id="category_id" name="category_id">
           <optgroup  label="Main Category">
             <option value="">Select</option>
-            @foreach($category as $cat)
-              @if($cat->parent_id == 0)
-                <option value="{{$cat->parent_id}}">{{$cat->name}}</option>
-              @else
-                <option value="{{$cat->parent_id}}">-> {{$cat->name}}</option>
-              @endif
-            @endforeach
+              <?php echo  $category_menu ?>
           </optgroup>
         </select>
       </div>
@@ -207,14 +201,14 @@ button#add {
      <div class="col">
       <div class="form-group">
           <label for="exampleInputEmail1">*Product Image Name:</label>
-          <input type="text" name="productimagename" class="form-control" id="productimagename" placeholder="Enter Product Image Name" value="{{old('productimagename')}}">
-       </div>
+            <input type="text"  name="productimagename" class="form-control" id="productimagename"  placeholder="Enter Product Image Name" value="{{old('productimagename')}}">
          @if($errors->has('productimagename'))
            <div  class="error">
              <br> {{$errors->first('productimagename')}}
            </div>
           @endif
     </div>
+  </div>
     <div class="col">
         <div class="form-group">
           <label for="exampleInputFile">* Choose Product Image :  </label>
@@ -250,15 +244,24 @@ button#add {
           @endforeach
         </select>
       </div>
+       @if($errors->has('attri_select'))
+        <div  class="error">
+          <br> {{$errors->first('attri_select')}}
+        </div>
+        @endif
     </div>
     <div class="col">
-        <label for="exampleInputEmail1">* Choose Attribute Value :<br>
-      <small>Multiple Attribute also selected using ctrl </small>
-        </label>
-        <select class="form-control" id="attri_val_1"   name="attri_val[]">
+       @if($errors->has('attri_val'))
+        <div  class="error">
+          <br> {{$errors->first('attri_val')}}
+        </div>
+        @endif
+        <label for="exampleInputEmail1">* Choose Attribute Value :<br> </label>
+        <select class="form-control" id="attri_val_1"  name="attri_val[]">
             <option value="">Select</option>
         </select>
     </div>
+   
     <div class="col">
      <button type="button" name="add" id="add_attri" class="btn btn-success">Add More</button>
     </div>
@@ -295,7 +298,7 @@ button#add {
 
 $('#add_attri').click(function(){
              i++;  
-      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select[]"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group"> <select class="form-control" id="attri_val_'+i+'"  name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
+      $('#attri_values').append('<div id="row'+i+'"><div class="form-row"><div class ="col"><label>* Choose Attribute :</label><select class="val form-control" name="attri_select[]"  id ="attri_select_'+i+'" ><option value="">Select</option> @foreach($product_attri as $attri)<option value="{{$attri->id}}">{{$attri->name}}</option>@endforeach</select></div><div class ="col"><div class="form-group">  <label for="exampleInputEmail1">* Choose Attribute Value :<br> </label><select class="form-control" id="attri_val_'+i+'"  name="attri_val[]">  <option value="">Select</option> </select></div></div><div class="col"><button type="button" name="remove" id="'+i+'"class="btn btn-danger btn_remove">X</button></div></div><hr></div></div>');
     });
 
  $(document).on('change','.val',function() {

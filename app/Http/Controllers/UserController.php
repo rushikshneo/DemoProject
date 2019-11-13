@@ -18,6 +18,12 @@ class UserController extends Controller
          // $this->middleware('permission:user-edit',   ['only' => ['edit','update']]);
          // $this->middleware('permission:user-delete', ['only' => ['destroy']]);
     }
+
+    // public function login(Request $request){
+    //     // dd("here");
+
+    // }
+
     public function index()
     {
         //  if (! Gate::allows('user-list')) {

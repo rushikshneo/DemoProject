@@ -57,6 +57,7 @@ class BannerController extends Controller
 
     public function update(Request $request, $id)
     {  
+        // dd( $request->all());
         $data = $request->all();
         if(empty($data['bannername'])){
             $bannername='';
@@ -64,7 +65,7 @@ class BannerController extends Controller
         
         if(empty($data['image']))
         {
-            $oldimage=banner::find($id);
+            $oldimage    = banner::find($id);
             $banner_path = $oldimage->banner_url;
         }
       

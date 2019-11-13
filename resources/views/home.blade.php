@@ -70,7 +70,7 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>0</h3>
+                <h3>{{$product_count}}</h3>
              <a class="title1" href="{{ url('/product') }}"><p>Product<br>Management</p></a>
               </div>
               <div class="icon">
@@ -84,7 +84,7 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>0</h3>
+                <h3>{{$coupons_count}}</h3>
              <a class="title1" href="{{ url('/coupon') }}"><p>Coupon<br> Management</p></a>
               </div>
               <div class="icon">

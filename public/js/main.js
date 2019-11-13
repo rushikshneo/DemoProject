@@ -1,0 +1,108 @@
+/*price range*/
+
+ $('#sl2').slider();
+
+	var RGBChange = function() {
+	  $('#RGB').css('background', 'rgb('+r.getValue()+','+g.getValue()+','+b.getValue()+')')
+	};	
+		
+/*scroll to top*/
+
+$(document).ready(function(){
+	$(function () {
+		$.scrollUp({
+	        scrollName: 'scrollUp', // Element ID
+	        scrollDistance: 300, // Distance from top/bottom before showing element (px)
+	        scrollFrom: 'top', // 'top' or 'bottom'
+	        scrollSpeed: 300, // Speed back to top (ms)
+	        easingType: 'linear', // Scroll to top easing (see http://easings.net/)
+	        animation: 'fade', // Fade, slide, none
+	        animationSpeed: 200, // Animation in speed (ms)
+	        scrollTrigger: false, // Set a custom triggering element. Can be an HTML string or jQuery object
+					//scrollTarget: false, // Set a custom target element for scrolling to the top
+	        scrollText: '<i class="fa fa-angle-up"></i>', // Text for element, can contain HTML
+	        scrollTitle: false, // Set a custom <a> title if required.
+	        scrollImg: false, // Set true to use image
+	        activeOverlay: false, // Set CSS color to display scrollUp active point, e.g '#00FFFF'
+	        zIndex: 2147483647 // Z-Index for the overlay
+		});
+	});
+});
+
+$().ready(function(){
+	 $("#login-form").validate({
+	 	 rules:{
+
+	 	 	 email:{
+	 	 	 	required:true,
+	 	 	 	email:true
+	 	 	 },
+	 	 	 password:{
+	 	 	 	 required:true,
+	 	 	 	 minlength:6,
+	 	 	 },
+	 	 	
+	 	 },
+	 	 // message:{
+           
+    //         email:{
+    //                  required:"Please Enter your email",
+    //                  email:"Enter The Valid Email"
+    //                },
+         
+    //       password:{
+    //           required:"Please Enter your password",
+    //          minlength:"Your Password must be atleast 6 charcters long"
+    //        },
+	 	 // }
+	 }); 
+
+	 $("#register-form").validate({
+		 	
+	 	  rules:{
+		 	 	 firstname:{
+		 	 	 	required:true,
+		 	 	 	
+		 	 	 },
+                 lastname:{
+		 	 	 	required:true,	
+		 	 	 },
+		 	 	 email:{
+		 	 	 	required:true,
+		 	 	 	email:true
+		 	 	 },
+
+		 	 	 password:{
+		 	 	 	 required:true,
+		 	 	 	 minlength:6,
+		 	 	 },
+		 	 	 password_confirmation:{
+		 	 	 	 equalTo:"#password",
+		 	 	 }
+	 	 	
+	 	 },
+
+	 	 // message:{
+	 	 // 	name:{
+    //                  required:"Please Enter your name",
+                    
+    //                },
+    //        email:{
+    //          required:"Please Enter your email",
+    //          email:"Enter The Valid Email"
+    //        },
+      
+    //           password:{
+    //           required:"Please Enter your password",
+    //           minlength:"Your Password must be atleast 6 charcters long"
+    //         },
+    //         confirm_password:{
+    //           equalTo:"The Password and Confirm Password Should be Same"
+    //         },
+	 	 //  },
+ 
+	 });
+	 
+});
+
+

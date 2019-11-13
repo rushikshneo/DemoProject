@@ -95,8 +95,7 @@ class ProductAttributeController extends Controller
               }
          return redirect()->route('product_attri.index')
           ->with('success','Product Attribute should be
-                  Updated successfully.');    
-
+                  Updated successfully.');   
     }
 
 
