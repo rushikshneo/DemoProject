@@ -13,7 +13,11 @@
           <!-- small box -->
             <div class="small-box bg-warning">
             <div class="inner">
-              <h3></h3>
+                @if($users_count != 0)
+                <h3>{{$users_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
              <a class="title1" href="{{ url('users') }}"> <p>User<br>Management</p></a>
            </div>
           <div class="icon">
@@ -27,7 +31,12 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3></h3>
+                 @if($config_count != 0)
+                <h3>{{$config_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
+
           <a class="title1" href="{{ url('/config') }}"><p>Configuration<br>Management</p></a>
               </div>
               <div class="icon">
@@ -42,7 +51,11 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3></h3>
+                  @if($banner_count != 0)
+                   <h3>{{$banner_count}}</h3>
+                  @else
+                   <h3>0</h3>
+                 @endif
               <a class="title1" href="{{ url('/banner') }}"> <p> Banner<br>Management</p></a>
               </div>
               <div class="icon">
@@ -56,7 +69,11 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3></h3>
+                 @if($categories_count != 0)
+                  <h3>{{$categories_count}}</h3>
+                @else
+                  <h3>0</h3>
+                @endif
             <a class="title1" href="{{ url('/category') }}"><p>Category<br> Management</p></a>
               </div>
               <div class="icon">
@@ -70,7 +87,12 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3></h3>
+                 @if($product_count != 0)
+                <h3>{{$product_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
+               
              <a class="title1" href="{{ url('/product') }}"><p>Product<br>Management</p></a>
               </div>
               <div class="icon">
@@ -84,7 +106,12 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3></h3>
+                 @if($coupons_count != 0)
+                <h3>{{$coupons_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
+               
              <a class="title1" href="{{ url('/coupon') }}"><p>Coupon<br> Management</p></a>
               </div>
               <div class="icon">
