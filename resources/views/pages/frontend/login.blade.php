@@ -5,7 +5,7 @@
 		color: red;
 	}
 </style>
-<section id="form"><!--form-->
+<section id="form" style="margin-top:-10px; margin-bottom:50px "><!--form-->
 		<div class="container">
 			@if ($message = Session::get('success'))
 			<div class="alert alert-success alert-block">
@@ -15,7 +15,7 @@
 			@endif
 			@if ($message = Session::get('error'))
 			<div class="alert alert-danger alert-block">
-			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+		<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>
 			</div>
 			@endif
@@ -28,8 +28,8 @@
 							<input type="email"  name="email" placeholder="Email Address" />
 							<input type="password" name="password" placeholder="Password" /><br>
 							<span>
-								<input type="checkbox" class="checkbox"> 
-								Keep me signed in
+							<input type="checkbox" class="checkbox"> 
+							Keep me signed in
 							</span>
 							<button type="submit" class="btn btn-default">Login</button>
 						</form>
@@ -43,10 +43,10 @@
 						<h2>New User Signup!</h2>
 					<form method="POST" action="{{route('shopping.user_register')}}" id="register-form">
 						@csrf
-							<input type="text"  name="firstname" placeholder="First Name"/>
-							<input type="text"  name="lastname" placeholder="Last Name"/>
-							<input type="email" name="email" placeholder="Email Address"/>
-							<input type="password"  name="password" id="password" placeholder="Password"/>
+							<input type ="text"  name="firstname" placeholder="First Name"/>
+							<input type ="text"  name="lastname" placeholder="Last Name"/>
+							<input type ="email" name="email" placeholder="Email Address"/>
+							<input type ="password"  name="password" id="password" placeholder="Password"/>
 							<input type="password"  name="password_confirmation"
 							 placeholder="Confirm Password"/><br>
 							<span><a href="">Forgot Password ?</a></span> 

@@ -43,18 +43,7 @@ $().ready(function(){
 	 	 	 },
 	 	 	
 	 	 },
-	 	 // message:{
-           
-    //         email:{
-    //                  required:"Please Enter your email",
-    //                  email:"Enter The Valid Email"
-    //                },
-         
-    //       password:{
-    //           required:"Please Enter your password",
-    //          minlength:"Your Password must be atleast 6 charcters long"
-    //        },
-	 	 // }
+ 
 	 }); 
 
 	 $("#register-form").validate({
@@ -81,26 +70,27 @@ $().ready(function(){
 		 	 	 }
 	 	 	
 	 	 },
+	 });
 
-	 	 // message:{
-	 	 // 	name:{
-    //                  required:"Please Enter your name",
-                    
-    //                },
-    //        email:{
-    //          required:"Please Enter your email",
-    //          email:"Enter The Valid Email"
-    //        },
-      
-    //           password:{
-    //           required:"Please Enter your password",
-    //           minlength:"Your Password must be atleast 6 charcters long"
-    //         },
-    //         confirm_password:{
-    //           equalTo:"The Password and Confirm Password Should be Same"
-    //         },
-	 	 //  },
- 
+	 	 $("#address").validate({
+	 	  rules:{
+		 	 	 address1:{
+		 	 	 	required:true,	
+		 	 	 },
+                 zip:{
+		 	 	 	required:true,	
+		 	 	    minlength:6,
+		 	 	 },
+		 	 	 city:{
+		 	 	 	required:true,
+		 	 	 },
+		 	 	 state:{
+		 	 	 	required:true,	
+		 	 	 },
+		 	 	 country:{
+		 	 	 	 required:true,
+		 	 	 },
+	 	 },
 	 });
 	 
 });

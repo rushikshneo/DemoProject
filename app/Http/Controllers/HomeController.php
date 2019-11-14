@@ -23,15 +23,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $users_count      = DB::table('users')->count();
-        $config_count     = DB::table('configures')->count(); 
-        $banner_count     = DB::table('banners')->count();   
-        $categories_count = DB::table('categories')->count(); 
-        $coupons_count    = DB::table('coupons')->count();
-        $product_count    = DB::table('products')->count();
+        // $users_count      = DB::table('users')->count();
+        // $config_count     = DB::table('configures')->count(); 
+        // $banner_count     = DB::table('banners')->count();   
+        // $categories_count = DB::table('categories')->count(); 
+        // $coupons_count    = DB::table('coupons')->count();
+        // $product_count    = DB::table('products')->count();
         // dd($categories_count);             
-        return view('home',compact('users_count','config_count','banner_count',
-              'categories_count','coupons_count','product_count'));
+        return view('home');
 
     }
 
