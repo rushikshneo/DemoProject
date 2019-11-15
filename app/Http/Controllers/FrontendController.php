@@ -43,27 +43,60 @@ class FrontendController extends Controller
        return view('pages.frontend.index',compact('category','category_menu','banners'));
     }
     public function account(){
-        $id=Auth::User()->id;
-        $userinfo = User::where('id',$id)->get();
-        return view('pages.frontend.account',compact('userinfo'));
+        $id          = Auth::User()->id;
+       $userinfo    = User::where('id',$id)->with('user_addresses')->get();
+        // dd($userinfo->id);
+        // $useraddress = user_addresses::where('user_id',$id)->latest()->get();
+        // dd($user_address);
+        return view('pages.frontend.account',compact('userinfo','useraddress'));
     }
+   
+    public function update_def_address(Request $request){
+       $id = $request->id;
+       $user = user_addresses::where('id','=',$id)->update(['defaultaddress'=>'1']);
 
+       return response()->json(['success' => 'success'], 200);
+       /*redirect()->route('shopping.account')
+         ->with("success","Your Default Address updated successfully.");*/
+      // dd($user);
+    }
 
 
     public function useraddress($id){
-        // dd("");
         return view('pages.frontend.address',compact('id'));
+    } 
+
+    public function updateaddress(Request $request,$id){
+      $data = $request->all();
+      // dd($id);
+      $user_add = user_addresses::where('id','=',$id)->update(['address1'=>$data['address1'],'address2'=>$data['address2'],'zip'=>$data['zip'],'city'=>$data['city'],'state'=>$data['state'],'country'=>$data['country'],'user_id'=> Auth::user()->id]);
+
+
+      return redirect()->route('shopping.account')
+                       ->with('success','Address updated successfully.');
     }
 
     public function storeuseradd(Request $request,$id){
-        $data             = new user_addresses;
-        $data['address1'] = $request->address1;
-        $data['address2'] = $request->address2;
-        $data['zip']      = $request->zip;
-        $data['city']     = $request->state;
-        $data['country']  = $request->country;
-        $data['user_id']  = $id;
-        $data->save();
+        if($request->isMethod('post'))
+        {
+            $data             = new user_addresses;
+            $data['address1'] = $request->address1;
+            $data['address2'] = $request->address2;
+            $data['zip']      = $request->zip;
+            $data['city']     = $request->city;
+            $data['state']    = $request->state;
+            $data['country']  = $request->country;
+            $data['user_id']  = $id;
+            $data->save();
+            return redirect()->route('shopping.account')
+                           ->with('success','Address added successfully.');
+        }
+    }
+
+    public function edituseradd($id){
+       $user_add = user_addresses::where('id','=',$id)->get();
+       // dd($user_add);
+       return view('pages.frontend.editaddress',compact('user_add'));    
     }
     
     public function userstore(Request $request){
@@ -73,11 +106,9 @@ class FrontendController extends Controller
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
         if(Auth::attempt(['email'=>$input['email'],'password'=>$input['password']])){
-                // dd("here");
               Session::put('frontSession', $input['email']);
               return redirect()->route('shopping.login')
-                         ->with('success',' successfully');
-                // return view('pages.frontend.index');
+                ->with('success','registration successfully done ! login now.');
             }
 
     }

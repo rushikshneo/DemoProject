@@ -20,6 +20,7 @@ class CreateUseraddressTable extends Migration
             $table->string('address2');
             $table->string('city');
             $table->string('state');
+            $table->tinyInteger('defaultaddress')->default('0');
             $table->string('country');
             $table->timestamps();
         });

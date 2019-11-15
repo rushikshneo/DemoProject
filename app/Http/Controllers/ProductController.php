@@ -207,7 +207,7 @@ class ProductController extends Controller
         $products['meta_description']         = $request->metadesc;
         $products['meta_keywords']            = $request->metakeyword;
         $products['status']                   = $request->status;
-        $products['modify_by']               = Auth::user()->id;        
+        $products['modify_by']                = Auth::user()->id;        
         $product_S->update($products);
          // $procat_id= products_categories::where('product_id','=',$product->id);
          // dd($procat_id );

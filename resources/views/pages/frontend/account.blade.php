@@ -4,9 +4,20 @@
 	.login-form label {
     font-family: 'Roboto', sans-serif;
     font-weight: 100;
+}
+
+
 </style>
+ <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 <section id="form" style="margin-top:0px;"><!--form-->
+
 		<div class="container">
+				@if ($message = Session::get('success'))
+			<div class="alert alert-success alert-block">
+			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+			<strong>{{ $message }}</strong>
+			</div>
+			@endif
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-1">
 					<div class="login-form"><!--login form-->
@@ -30,28 +41,47 @@
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
 						<h2>Address</h2>
-						 <a href="{{route('shopping.address',$info->id)}}" class="btn btn-default">Add Address</a>
-							<!-- <button type="submit" ></button> -->
-							  @endforeach
-							<div class="card">
-							
-
-							<!--  <div class="card-body">
-							<h5 class="card-title">Special title treatment</h5>
-							<p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-							<a href="#" class="btn btn-primary">Go somewhere</a>
-							</div> -->
+						 <a href="{{route('shopping.address',$info->id)}}" class="btn btn-primary">Add Address</a><br><br>
+							  @foreach($info['user_addresses'] as $address)
+							 <div class="card">
+                          <div class="container">
+                          	@if($address->defaultaddress == 1)
+							 <input  type="radio" id="{{$address->id}}" name="defaultaddress" 
+							   value="1" class="radio" {{($address->defaultaddress == 1) ? 'checked' : '' }} >
+							 @else
+							   <input  type="radio" id="{{$address->id}}" name="defaultaddress" value="0" class="radio" {{($address->defaultaddress == 0) ? 'unchecked' : '' }} >
+							 @endif
+								<p> {{$address->address1}},<br>
+									{{$address->address2}},<br>
+									{{$address->city}} {{$address->state}},{{$address->country}}  -{{$address->zip}}
+								</p>
+								<a href="{{route('shopping.addressedit',$address->id)}}" class="btn btn-default" > Edit address</a>
 							</div>
-						<!-- <form action="#">
-							<label>First Name </label>
-							<input type ="text"  name="firstname" value="{{$info->firstname}}" placeholder="First Name"/>
-							<input type="email" placeholder="Email Address"/>
-							<input type="password" placeholder="Password"/>
-							<button type="submit" class="btn btn-default">Signup</button>
-						</form> -->
+							</div><br>
+						    @endforeach
+					  @endforeach
 					</div><!--/sign up form-->
 				</div>
 			</div>
 		</div>
 	</section><!--/form-->
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(document).on('change','.radio',function() {
+			 var defaultaddress_id  = this.id;
+			  
+			   $.ajax({
+        type: "GET",
+        url: "/makedeafult/",
+        data: {
+                id: defaultaddress_id,
+              }
+          }).done(
+          	      
+          	      alert("added")
+      	    );
+		});
+	});
+	
+</script>
 @endsection
