@@ -39,9 +39,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+  public function is_admin(){
+    if($this->role !="Customer"){
 
-
-
+        return true;
+    }   
+    return false;
+  }
    public function user_addresses(){
         return $this->hasMany(user_addresses::class);
     }

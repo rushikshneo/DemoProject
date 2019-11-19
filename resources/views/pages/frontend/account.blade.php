@@ -5,6 +5,10 @@
     font-family: 'Roboto', sans-serif;
     font-weight: 100;
 }
+a.btn.btn-danger {
+    margin-top: -55px;
+    margin-left: 108px;
+}
 
 
 </style>
@@ -56,6 +60,13 @@
 									{{$address->city}} {{$address->state}},{{$address->country}}  -{{$address->zip}}
 								</p>
 								<a href="{{route('shopping.addressedit',$address->id)}}" class="btn btn-default" > Edit address</a>
+								<form action="{{url('/deleteadd', [$address->id])}}" method="POST">
+                                {{method_field('DELETE')}}
+							      @csrf
+							      <a type="submit" class="btn btn-danger" value="Delete"
+							             onclick="return confirm('Are you sure?')">Delete Address</a>
+							    </form>
+
 							</div>
 							</div><br>
 						    @endforeach
@@ -78,7 +89,7 @@
               }
           }).done(
           	      
-          	      alert("added")
+          	      alert("Default address is updated")
       	    );
 		});
 	});

@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Auth;
+use Illuminate\Http\Request;
+use App\User;
+
+use Socialite;
 
 class LoginController extends Controller
 {
@@ -32,15 +37,45 @@ class LoginController extends Controller
      *
      * @return void
      */
+
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
-     protected function credentials(\Illuminate\Http\Request $request)
-    {
-        //return $request->only($this->username(), 'password');
-        return ['email' => $request->{$this->username()}, 'password' => $request->password, 'status' => 1];
+
+
+ 
+    public function login_custom(Request $request){
+        // dd($request->all());
+        if(Auth::attempt([
+                    'email'=> $request->email,
+                    'password'=>$request->password,
+            ]))
+         {
+                $user = User::Where('email',$request->email)->first();
+                if($user->is_admin())
+                { 
+                    return redirect('/');
+                }
+        }
     }
+
+    // public function login(Request $request)
+    // {
+    //     $user = User::where('email', $request->{$this->username()})
+    //               ->where('password',md5($request->password))
+    //               ->where('status',1)
+    //               ->first();
+    //      Auth::login($user);
+    //     return redirect('/');
+    // }
+
+    //  protected function credentials(\Illuminate\Http\Request $request)
+    // {
+    //     return ['email' => $request->{$this->username()}, 'password' => $request->password, 'status' => 1];
+    // }
+
      protected function sendFailedLoginResponse(\Illuminate\Http\Request $request)
     { 
          $notactive = "Credentials is Not Active Please Contect Admin.";

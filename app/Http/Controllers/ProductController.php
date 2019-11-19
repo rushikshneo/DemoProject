@@ -22,7 +22,7 @@ class ProductController extends Controller
 
         $products      = product::with('images')->latest()->paginate(5);
         $products_cat  = product_categories::join('categories','product_categories.category_id','=','categories.id')->get();
-        return view('pages.ProductManagement.index',compact('products','product_image','products_cat'));
+        return view('pages.ProductManagement.index',compact('products','products_cat'));
     }
 
     public function create()

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\productattribute;
 use App\Category;
+use App\Product;
 use Illuminate\Http\Request;
 use App\banner;
 use App\User;
@@ -10,7 +11,7 @@ use App\user_addresses;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 use Session; 
-
+use Socialite;
 class FrontendController extends Controller
 {
    
@@ -39,9 +40,100 @@ class FrontendController extends Controller
 									</div>
 								</div>";
                       }
-            $banners = Banner::get();
-       return view('pages.frontend.index',compact('category','category_menu','banners'));
+            $banners    = Banner::get();
+            $products   = Product::with('images')->with('category')->get();
+            $collection = collect( $products);
+            $chunks     = $collection->chunk(3);
+            $chunks2    = $collection->chunk(4);
+            $result     = $chunks->toArray(); 
+
+ $subcat ="";
+
+   $subcat .="<div class='category-tab'>
+             <div class='col-sm-12'>
+                <ul class='nav nav-tabs'>
+                  <li class='active'><a href=' data-toggle='tab'>
+                </ul>
+              </div>
+         <div class='tab-content'>
+           <div class='tab-pane fade active in' id=' >
+             <div class='col-sm-3'>
+               <div class='product-image-wrapper'>
+                 <div class='single-products'>
+                   <div class='productinfo text-center'>
+                     <img src=' 
+                     alt=' style='height:185px; width:auto;' />
+                       <h2>  </h2>
+                       <p>  </p>
+                       <a href='#' class='btn btn-default add-to-cart'><i class='fa fa-shopping-cart'></i>Add to cart</a>
+                     </div>
+                  </div>
+               </div>
+             </div>
+           </div>
+         </div>
+</div>";       
+               // dd($chunks2);
+
+
+       return view('pages.frontend.index',compact('category','category_menu','banners',
+           'products','chunks','chunks2','subcat'));
     }
+
+
+// public function redirectToProvider($provider)
+//    {
+//        return Socialite::driver($provider)->redirect();
+//    }
+
+
+//    public function handleProviderCallback($provider)
+//    {
+//        try {
+//            $user = Socialite::driver($provider)->user();
+//        } catch (Exception $e) {
+//            return redirect()->route('shopping.home');
+//        }
+
+//        $authUser = $this->findOrCreateUser($user, $provider);
+//        Auth::login($authUser, true);
+//        return redirect($this->redirectTo);
+//    }
+
+
+//    public function findOrCreateUser($providerUser, $provider)
+//    {
+//        $account = SocialIdentity::whereProviderName($provider)
+//                   ->whereProviderId($providerUser->getId())
+//                   ->first();
+//        if ($account) {
+//            return $account->user;
+//        } else {
+//            $user = User::whereEmail($providerUser->getEmail())->first();
+//               // dd($user);
+//            if (! $user) {
+//                $user = User::create([
+//                    'email'      => $providerUser->getEmail(),
+//                    'firstname'  => $providerUser->getName(),
+//                    'lastname'   => $providerUser->getName(),
+
+//                ]);
+//            }
+
+//            $user->identities()->create([
+//                'provider_id'   => $providerUser->getId(),
+//                'provider_name' => $provider,
+//            ]);
+
+//            return $user;
+//        }
+//    }
+
+
+
+
+
+
     public function account(){
         $id          = Auth::User()->id;
        $userinfo    = User::where('id',$id)->with('user_addresses')->get();
@@ -53,12 +145,12 @@ class FrontendController extends Controller
    
     public function update_def_address(Request $request){
        $id = $request->id;
-       $user = user_addresses::where('id','=',$id)->update(['defaultaddress'=>'1']);
-
+       user_addresses::where('user_id', Auth::User()->id)->
+                               where('defaultaddress',1)->
+                               update(['defaultaddress'=>'0']);
+       $user = user_addresses::where('id','=',$id)
+               ->update(['defaultaddress'=>'1']);
        return response()->json(['success' => 'success'], 200);
-       /*redirect()->route('shopping.account')
-         ->with("success","Your Default Address updated successfully.");*/
-      // dd($user);
     }
 
 
@@ -74,6 +166,23 @@ class FrontendController extends Controller
 
       return redirect()->route('shopping.account')
                        ->with('success','Address updated successfully.');
+    }
+
+    public function deleteadd($id){
+         $id = user_addresses::find($id);
+       if($id->defaultaddress == 0){
+           $id->delete();
+           return redirect()->route('shopping.account')
+                  ->with('success','Address deleted successfully.');
+       }else{
+              $id->delete();
+              $latest = user_addresses::latest()->first();
+              $user   = user_addresses::where('id','=',$latest->id)
+                        ->update(['defaultaddress'=>1]);
+                return redirect()->route('shopping.account')
+                       ->with('success','Address deleted successfully the default address should be changed.');
+       }
+
     }
 
     public function storeuseradd(Request $request,$id){
@@ -124,21 +233,32 @@ class FrontendController extends Controller
 
     public function userverify(Request $request){
     	// dd($request->all());
-    	// dd(Auth::user()->role);
     	if($request->isMethod('post')){
     		$data = $request->all();
-    		if(Auth::attempt(['email'=>$data['email'],'password'=>$data['password']]) && Auth::user()->role == "Customer"){
+    		if(Auth::attempt(['email'=>$data['email'],'password'=>$data['password']])){
+            $user = User::Where('email',$request->email)
+                         ->Where('status','0')
+                         ->first();
+                if($user->is_admin()==false)
+                { 
                   Session::put('frontSession',$data['email']);
-    			 return redirect()->route('shopping.home');
+                  return redirect()->route('shopping.home');
+           }
     		}else{
+    			  return redirect()->back()->with('error','Invalid User.');
                  // if(Auth::user()->role == "Customer")
                  // {
                  //   return redirect()->back()->with('error','Invalid Username or Password.');
                  // }else{    
-    			  return redirect()->back()->with('error','Invalid User.');
                  // } 
     		}
     	}
+    }
+
+
+    public function forgot(){
+      // dd("here");
+      return view('pages.frontend.forgot');
     }
     public function product()
     {

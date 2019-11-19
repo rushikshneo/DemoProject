@@ -106,7 +106,7 @@
       <p class="login-box-msg">Sign in to start your session</p>
 <!-- <form action="../../index3.html" method="post"> -->
 
- <form method="POST" action="{{ route('login') }}">
+ <form method="POST" action="{{ route('login.custom') }}">
       @csrf
         <div class="input-group mb-3">
 

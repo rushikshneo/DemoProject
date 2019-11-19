@@ -32,7 +32,10 @@
 							Keep me signed in
 							</span>
 							<button type="submit" class="btn btn-default">Login</button>
+
 						</form>
+						<!--  <a href="{{ url('/login/facebook') }}" class="btn btn-facebook" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a> -->
+     
 					</div><!--/login form-->
 				</div>
 				<div class="col-sm-1">
@@ -49,8 +52,7 @@
 							<input type ="password"  name="password" id="password" placeholder="Password"/>
 							<input type="password"  name="password_confirmation"
 							 placeholder="Confirm Password"/><br>
-							<span><a href="">Forgot Password ?</a></span> 
-
+							<span><a href="{{route('shopping.forgot')}}">Forgot Password ?</a></span> 
 							<button type="submit" class="btn btn-defaul " style="
 							margin-top: 20px;">Signup</button>
 						</form>
