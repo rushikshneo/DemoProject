@@ -165,9 +165,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
-
-
-
         /*
          * Package Service Providers...
          */
@@ -233,9 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-       'Cart' => Darryldecode\Cart\Facades\CartFacade::class
-
-
+       'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
     ],
 
 ];

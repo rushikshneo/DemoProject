@@ -16,7 +16,7 @@ a.btn.btn-danger {
 <section id="form" style="margin-top:0px;"><!--form-->
 
 		<div class="container">
-				@if ($message = Session::get('success'))
+			@if ($message = Session::get('success'))
 			<div class="alert alert-success alert-block">
 			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>

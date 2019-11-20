@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\banner;
 use App\User;
 use App\user_addresses;
+use Darryldecode\Cart\CartCondition;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 use Session; 
@@ -46,36 +47,6 @@ class FrontendController extends Controller
             $chunks     = $collection->chunk(3);
             $chunks2    = $collection->chunk(4);
             $result     = $chunks->toArray(); 
-
- $subcat ="";
-
-   $subcat .="<div class='category-tab'>
-             <div class='col-sm-12'>
-                <ul class='nav nav-tabs'>
-                  <li class='active'><a href=' data-toggle='tab'>
-                </ul>
-              </div>
-         <div class='tab-content'>
-           <div class='tab-pane fade active in' id=' >
-             <div class='col-sm-3'>
-               <div class='product-image-wrapper'>
-                 <div class='single-products'>
-                   <div class='productinfo text-center'>
-                     <img src=' 
-                     alt=' style='height:185px; width:auto;' />
-                       <h2>  </h2>
-                       <p>  </p>
-                       <a href='#' class='btn btn-default add-to-cart'><i class='fa fa-shopping-cart'></i>Add to cart</a>
-                     </div>
-                  </div>
-               </div>
-             </div>
-           </div>
-         </div>
-</div>";       
-               // dd($chunks2);
-
-
        return view('pages.frontend.index',compact('category','category_menu','banners',
            'products','chunks','chunks2','subcat'));
     }
@@ -158,12 +129,12 @@ class FrontendController extends Controller
         return view('pages.frontend.address',compact('id'));
     } 
 
+   
+
     public function updateaddress(Request $request,$id){
       $data = $request->all();
       // dd($id);
       $user_add = user_addresses::where('id','=',$id)->update(['address1'=>$data['address1'],'address2'=>$data['address2'],'zip'=>$data['zip'],'city'=>$data['city'],'state'=>$data['state'],'country'=>$data['country'],'user_id'=> Auth::user()->id]);
-
-
       return redirect()->route('shopping.account')
                        ->with('success','Address updated successfully.');
     }
@@ -221,10 +192,34 @@ class FrontendController extends Controller
             }
 
     }
+   
+ public function addtocart(Request $request,$Product_id){     
+       $product_details = Product::where('id','=',$Product_id)->with('images')->get();
+       foreach ($product_details as $product_details) {
+           foreach ($product_details->images as $value) {
+          $item = \Cart::session(Auth::user()->id)->add(['id' => $product_details->id, 'name' => $product_details->name, 'quantity' =>1 , 'price' => $product_details->price, 'image_url' => $value->image_url, 'options' => ['size' => 'large']]);
+          return redirect()->route('shopping.cart')->with('success','item added successfully.');
+           }
+        }
+    }
 
-   public function chart(){
-     return view('pages.frontend.chart');
+   public function cart(){
+     $item      = \Cart::session(Auth::user()->id)->getContent();
+     $sub_total = \Cart::session(Auth::user()->id)->getSubTotal();
+     $total     = \Cart::session(Auth::user()->id)->getTotal();
+     if(count($item)==0){
+       return view('pages.frontend.cart',compact('item'))->with('error','There is no product in Cart .');
+     }else{ 
+       return view('pages.frontend.cart',compact('item','sub_total','total'));
+     }
    }
+    
+    public function removefromcart($id){
+      \Cart::session(Auth::user()->id)->remove($id);
+      return redirect()->route('shopping.cart')
+                        ->with('success','Product remove from cart successfully');
+    }
+
     public function userlogout(){
         Auth::logout();
         Session::forget('frontSession');
@@ -232,7 +227,6 @@ class FrontendController extends Controller
     }
 
     public function userverify(Request $request){
-    	// dd($request->all());
     	if($request->isMethod('post')){
     		$data = $request->all();
     		if(Auth::attempt(['email'=>$data['email'],'password'=>$data['password']])){
@@ -243,7 +237,7 @@ class FrontendController extends Controller
                 { 
                   Session::put('frontSession',$data['email']);
                   return redirect()->route('shopping.home');
-           }
+                }
     		}else{
     			  return redirect()->back()->with('error','Invalid User.');
                  // if(Auth::user()->role == "Customer")
@@ -262,7 +256,7 @@ class FrontendController extends Controller
     }
     public function product()
     {
-        return view('pages.frontend.shop');
+        return view('pages.frontend.product');
     }
 
     public function login(){

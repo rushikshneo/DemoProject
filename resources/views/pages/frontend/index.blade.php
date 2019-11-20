@@ -80,8 +80,7 @@
 					</div>
 				</div>
 
-				
-			<!-- 		 <?php echo $subcat; ?>
+			<!-- 		
 				 -->
 				<div class="col-sm-9 padding-right">
 					<div class="features_items"><!--features_items-->
@@ -96,13 +95,13 @@
 											@endforeach
 											<h2>&#x20b9;{{$product->price}}</h2>
 											<p>{{$product->name}}</p>
-											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											<a href="{{route('shopping.addtocart',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 										</div>
 										<div class="product-overlay">
 											<div class="overlay-content">
 												<h2>&#x20b9;{{$product->price}}</h2>
 												<p>{{$product->name}}</p>
-												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+												<a href="{{route('shopping.addtocart',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 											</div>
 										</div>
 								</div>
@@ -119,6 +118,9 @@
 					</div><!--features_items-->
 					
 				
+				<div class='category-tab'>
+
+                </div>
 					
 					<div class="recommended_items"><!--recommended_items-->
 						<h2 class="title text-center">recommended items</h2>
