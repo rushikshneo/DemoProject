@@ -46,12 +46,12 @@
       <td>
         <a class="btn btn-info" href="{{ route('roles.show',$role->id) }}">Show </a>
         <a class="btn btn-primary" href="{{ route('roles.edit',$role->id) }}">Edit</a>
-        <form action="{{url('roles', [$role->id])}}" method="POST">
+       <!--  <form action="{{url('roles', [$role->id])}}" method="POST">
           {{method_field('DELETE')}}
           @csrf
           <input type="submit"class="btn btn-danger" value="Delete"
                  onclick="return confirm('Are you sure?')"/>
-        </form>
+        </form> -->
       </td>
     </tr>
     @endforeach

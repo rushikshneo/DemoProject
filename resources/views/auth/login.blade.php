@@ -88,6 +88,9 @@
     .notactive {
      margin-left: 28px;
     }
+    /*.error{
+    color: red;
+  }*/
   </style>
 </head>
 <body class="hold-transition login-page">
@@ -100,6 +103,14 @@
     <p style="color: red;">{{$notactive}}</p>
   </div>
   @endif
+
+  @if ($message = Session::get('error'))
+    <div class="alert alert-danger alert-block">
+        <button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+      <strong>{{ $message }}</strong>
+      </div>
+   
+  @endif
   <!-- /.login-logo -->
   <div class="card">
     <div class="card-body login-card-body">
@@ -109,7 +120,7 @@
  <form method="POST" action="{{ route('login.custom') }}">
       @csrf
         <div class="input-group mb-3">
-
+          
            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
           <div class="input-group-append">
             <div class="input-group-text">

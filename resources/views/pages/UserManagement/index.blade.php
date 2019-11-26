@@ -120,6 +120,7 @@ margin-top: 3px;
         @endforeach
         </tbody>
     </table>
+      {{$users->links()}}
     </div>
 </section>
 @endsection

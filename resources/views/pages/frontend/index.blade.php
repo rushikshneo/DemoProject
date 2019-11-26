@@ -26,7 +26,6 @@
 							</div>
 							@endforeach
 						</div>
-						
 						<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
 							<i class="fa fa-angle-left"></i>
 						</a>
@@ -100,7 +99,7 @@
 										<div class="product-overlay">
 											<div class="overlay-content">
 												<h2>&#x20b9;{{$product->price}}</h2>
-												<p>{{$product->name}}</p>
+												 <p><a style="color: white;" href="{{route('shopping.product_details',$product->id)}}">{{$product->name}}</a></p>
 												<a href="{{route('shopping.addtocart',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 											</div>
 										</div>
@@ -124,8 +123,7 @@
 					
 					<div class="recommended_items"><!--recommended_items-->
 						<h2 class="title text-center">recommended items</h2>
-						
-						<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+					<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
 							<div class="carousel-inner">
 								@foreach($chunks as $key => $product)
 								<div class="item @if($key == 0) active @endif">	
@@ -139,8 +137,9 @@
 													alt="" style="height:185px; width:auto;" />
 													@endforeach
 													<h2>&#x20b9;{{$prod->price}}</h2>
-													<p>{{$prod->name}}</p>
-													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+													<p> <a href="{{route('shopping.product_details',$prod->id)}}" style="color:
+													 #696763;">{{$prod->name}}</a></p>
+													<a href="{{route('shopping.addtocart',$prod->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 												</div>
 												
 											</div>
@@ -150,7 +149,7 @@
 								</div>
 								@endforeach
 							</div>
-							 <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
+							  <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
 								<i class="fa fa-angle-left"></i>
 							  </a>
 							  <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
@@ -158,7 +157,6 @@
 							  </a>			
 						</div>
 					</div><!--/recommended_items-->
-					
 				</div>
 			</div>
 		</div>

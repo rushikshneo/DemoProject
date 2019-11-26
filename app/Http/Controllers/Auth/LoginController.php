@@ -44,21 +44,25 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-
- 
     public function login_custom(Request $request){
-        // dd($request->all());
         if(Auth::attempt([
                     'email'=> $request->email,
                     'password'=>$request->password,
-            ]))
-         {
-                $user = User::Where('email',$request->email)->first();
-                if($user->is_admin())
-                { 
-                    return redirect('/');
-                }
-        }
+            ])){
+                    $user = User::Where('email',$request->email)->first();
+                      if($user->is_admin())
+                      {   
+                        return  redirect('/');
+                      }else if($user->is_active()){
+                         return  redirect('/');
+                      }else{
+                        Auth::logout();
+                        return  redirect()->route('login')->with('error','You do not admin access Please contact Admin .');
+                      }
+              }else{
+                 return  redirect()->route('login')->with('error','Please Cheack your password or username.');
+             }
+
     }
 
     // public function login(Request $request)
@@ -71,14 +75,14 @@ class LoginController extends Controller
     //     return redirect('/');
     // }
 
-    //  protected function credentials(\Illuminate\Http\Request $request)
-    // {
-    //     return ['email' => $request->{$this->username()}, 'password' => $request->password, 'status' => 1];
-    // }
+     protected function credentials(\Illuminate\Http\Request $request)
+    {
+        return ['email' => $request->{$this->username()}, 'password' => $request->password, 'status' => 1];
+    }
 
      protected function sendFailedLoginResponse(\Illuminate\Http\Request $request)
     { 
-         $notactive = "Credentials is Not Active Please Contect Admin.";
+        $notactive = "Credentials is Not Active Please Contect Admin.";
         return view('auth.login',compact('notactive'));
         // return redirect('/login')->with(compact('notactive'));    
     }

@@ -14,7 +14,7 @@
 
 
     Route::post('/login/custom',     'Auth\LoginController@login_custom')->name('login.custom');
-
+    
     Route::resource('users'        , 'UserController');
     Route::resource('config'       , 'ConfigController');
     Route::resource('banner'       , 'BannerController');
@@ -22,13 +22,13 @@
     Route::resource('product'      , 'ProductController');
     Route::resource('product_attri', 'ProductAttributeController');
     Route::resource('coupon'       , 'CouponController');
-    Route::resource('product_attri', 'ProductAttributeController');
+    // Route::resource('product_attri', 'ProductAttributeController');
     Route::get     ('/attribute'   , 'ProductController@function_delete');
   
 
  
     Route::get ('/shopping'          ,'FrontendController@index')->name('shopping.home');
-    Route::get ('/shopping/product'  ,'FrontendController@product')->name('shopping.product');
+    // Route::get ('/shopping/product'  ,'FrontendController@product')->name('shopping.product');
     Route::get ('/shopping/login'    ,'FrontendController@login')->name('shopping.login');
     // Route::get('login/{provider}', 'FrontendController@redirectToProvider');
     // Route::get('login/{provider}/callback','FrontendController@handleProviderCallback');
@@ -38,6 +38,8 @@
     Route::get ('/shopping/logout'   ,'FrontendController@userlogout')->name('shopping.userlogout');
 
     Route::get('/shopping/account/forgot','FrontendController@forgot')->name('shopping.forgot');
+
+    
     Route::group(['middleware' => ['frontlogin']], function() {
     Route::match (['get','post'],'/shopping/cart','FrontendController@cart')
                 ->name('shopping.cart');   
@@ -50,6 +52,15 @@
     Route::delete('/deleteadd/{id}' ,'FrontendController@deleteadd')->name('shopping.deleteadd');
     Route::get('/shopping/{id}/addtocart' ,'FrontendController@addtocart')->name('shopping.addtocart');
     Route::delete('/shopping/{id}/delete' ,'FrontendController@removefromcart')->name('shopping.removefromcart');
+    Route::get('/shopping/{id}/product_details' ,'FrontendController@product')->name('shopping.product_details');
+     Route::get('/shopping/checkout/' ,'FrontendController@checkout_product')->name('shopping.checkout');
+     // payWithpaypal
+
+Route::get('/shopping/paypal/' ,'FrontendController@paypal')->name('shopping.paypal');
+
+    Route::post('/shopping/payment/' ,'PaypalController@payWithpaypal')->name('shopping.payWithpaypal');
+
+      Route::get('/shopping/status/' ,'PaypalController@getPaymentStatus')->name('shopping.status');
 
 });
 

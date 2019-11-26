@@ -62,11 +62,11 @@
 				 <form action="{{route('shopping.removefromcart',$cartadded->id)}}" method="POST">
                  {{method_field('DELETE')}}
                  @csrf
-                 <button class="cart_quantity_delete" type="submit"class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure?')" ><i class="fa fa-times"></i></button>
+                 <button class="cart_quantity_delete" type="submit" class="btn btn-danger" value="Delete" onclick="return confirm('Are you sure?')" ><i class="fa fa-times" ></i></button>
         		</form>
 			   </td>
 			</tr>
-			@endforeach
+			 @endforeach
 			@else
 			 <tr> <td><p>No Products in Cart.</p></td></tr>
 			@endif
@@ -196,7 +196,9 @@
 							<li>Total <span>&#x20b9;{{$total}}</span></li>
 						</ul>
 							<a class="btn btn-default update" href="">Update</a>
-							<a class="btn btn-default check_out" href="">Check Out</a>
+							@if(count($item)!= 0)
+									<a class="btn btn-default check_out" href="{{route('shopping.checkout')}}">Check Out</a>
+							@endif
 					</div>
 				</div>
 			</div>

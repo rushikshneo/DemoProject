@@ -13,9 +13,13 @@ use Illuminate\Support\Facades\Hash;
 use Auth;
 use Session; 
 use Socialite;
+use Illuminate\Support\Facades\URL;
+use App\ProductsAttribute;
+
 class FrontendController extends Controller
 {
    
+  
     public function index()
     {
 
@@ -42,7 +46,7 @@ class FrontendController extends Controller
 								</div>";
                       }
             $banners    = Banner::get();
-            $products   = Product::with('images')->with('category')->get();
+            $products   = Product::with('images')->where('status','=','0')->with('category')->get();
             $collection = collect( $products);
             $chunks     = $collection->chunk(3);
             $chunks2    = $collection->chunk(4);
@@ -121,7 +125,14 @@ class FrontendController extends Controller
                                update(['defaultaddress'=>'0']);
        $user = user_addresses::where('id','=',$id)
                ->update(['defaultaddress'=>'1']);
-       return response()->json(['success' => 'success'], 200);
+
+       $getcurrent_url= URL::previous();
+       $get_page=explode('/', $getcurrent_url)[4]; 
+       if($get_page=="checkout"){
+           // return  redirect()->back();
+       }else{ 
+         return response()->json(['success' => 'success'], 200);
+       }
     }
 
 
@@ -132,11 +143,18 @@ class FrontendController extends Controller
    
 
     public function updateaddress(Request $request,$id){
+       // dd($request->all());
       $data = $request->all();
-      // dd($id);
       $user_add = user_addresses::where('id','=',$id)->update(['address1'=>$data['address1'],'address2'=>$data['address2'],'zip'=>$data['zip'],'city'=>$data['city'],'state'=>$data['state'],'country'=>$data['country'],'user_id'=> Auth::user()->id]);
+      $getcurrent_url= URL::previous();
+      $get_page=explode('/', $getcurrent_url)[4];
+      if($get_page=="checkout"){
+      return redirect()->route('shopping.checkout')
+                       ->with('success','Address updated successfully.');
+      }else{ 
       return redirect()->route('shopping.account')
                        ->with('success','Address updated successfully.');
+      }
     }
 
     public function deleteadd($id){
@@ -192,6 +210,18 @@ class FrontendController extends Controller
             }
 
     }
+
+    public function paypal(){
+      $product = \Cart::session(Auth::user()->id)->getContent();
+      $total   = \Cart::session(Auth::user()->id)->getTotal();
+                  Session::put('total',$total);
+     $userinfo = User::where('id','=',Auth::user()->id)
+                          ->where('dedefaultaddress','=','1')
+                        ->with('user_addresses')->get();
+
+      dd($userinfo);                        
+      return view('pages.frontend.paypal',compact('userinfo'));
+    }
    
  public function addtocart(Request $request,$Product_id){     
        $product_details = Product::where('id','=',$Product_id)->with('images')->get();
@@ -208,7 +238,7 @@ class FrontendController extends Controller
      $sub_total = \Cart::session(Auth::user()->id)->getSubTotal();
      $total     = \Cart::session(Auth::user()->id)->getTotal();
      if(count($item)==0){
-       return view('pages.frontend.cart',compact('item'))->with('error','There is no product in Cart .');
+       return view('pages.frontend.cart',compact('item','sub_total','total'))->with('error','There is no product in Cart .');
      }else{ 
        return view('pages.frontend.cart',compact('item','sub_total','total'));
      }
@@ -254,10 +284,48 @@ class FrontendController extends Controller
       // dd("here");
       return view('pages.frontend.forgot');
     }
-    public function product()
+    public function product($id)
     {
-        return view('pages.frontend.product');
+        $category = Category::where(['parent_id'=> 0 ])->get(); 
+        $category_menu ="";
+        foreach ($category as $value){
+             $category_menu .= "<div class='panel-heading'>
+                  <h4 class='panel-title'>
+                    <a data-toggle='collapse' data-parent='#accordian' href='#".$value->id."'>
+                      <span class='badge pull-right'><i class='fa fa-plus'></i></span>
+                      ".strtoupper($value->name)."
+                    </a>
+                  </h4>
+                </div>
+                <div id='".$value->id."' class='panel-collapse collapse'>
+                  <div class='panel-body'>
+                    <ul>";
+             $subcat = Category::where(['parent_id'=>$value->id])->get();
+                foreach ($subcat as $sub) {
+                   $category_menu .="<li><a href='#'>".strtoupper($sub->name)."</a></li>";
+                }     
+        $category_menu .= "</ul>
+                           </div>
+                           </div>";
+                          }
+        $products        = Product::with('images')->with('category')->get();
+        $collection      = collect( $products);
+        $chunks          = $collection->chunk(3);
+        $product_details = Product::where('id','=', $id)->with('images')->get();
+
+        return view('pages.frontend.product',compact('category_menu','chunks','product_details'));
     }
+
+     public function checkout_product(){
+     $item        = \Cart::session(Auth::user()->id)->getContent();
+     $sub_total   = \Cart::session(Auth::user()->id)->getSubTotal();
+     $total       = \Cart::session(Auth::user()->id)->getTotal();
+     $userinfo    = User::where('id','=',Auth::user()->id)->with('user_addresses')->get();
+     // $getcurrent_url= URL::current();
+     // $get_page=explode('/', $getcurrent_url)[4]; 
+        // dd("here");
+     return view('pages.frontend.checkout',compact('item','sub_total','total','userinfo'));
+     }
 
     public function login(){
     	return view('pages.frontend.login');

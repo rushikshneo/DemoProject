@@ -40,12 +40,21 @@ class User extends Authenticatable
     ];
 
   public function is_admin(){
-    if($this->role !="Customer"){
-
+     if($this->role != "Customer"){
         return true;
-    }   
-    return false;
+    }else{
+      return false;
+    }
   }
+
+public function is_active(){
+     if($this->status!= 0){
+        return true;
+    }else{
+      return false;
+    }
+  }
+
    public function user_addresses(){
         return $this->hasMany(user_addresses::class);
     }

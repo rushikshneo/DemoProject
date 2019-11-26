@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\User;
 use Illuminate\Support\Facades\Gate;
+use Auth;
 
 class UserController extends Controller
 {
@@ -30,7 +31,9 @@ class UserController extends Controller
         //     return abort(401);
         // }
             
-        $users = User::orderBy('id','DESC')->paginate(5);
+        $users = User::orderBy('id','DESC')->
+                 where('id','!=',Auth::user()->id)
+                 ->paginate(5);
         $user_role=User::select('role','id')->get();
         // dd($user_role);
         return view('pages.UserManagement.index',compact('users','user_role'));
