@@ -175,8 +175,8 @@
 				 <td colspan="4">&nbsp;</td>
 					<td colspan="2">
 						<table class="table table-condensed total-result">
-							<!-- <form method="POST" action="{{route('shopping.paypal')}}" id="from">
-							@csrf	 -->
+							<form method="POST" action="{{route('shopping.paypal')}}" id="from">
+							@csrf	
 							<tr>
 								<td>Cart Sub Total</td>
 								<td>&#x20b9;{{$sub_total}}</td>
@@ -198,12 +198,13 @@
 							<td>
 								<div class="payment-options">
 								<span>
-							    <a href="{{route('shopping.paypal')}}" class="btn btn-primary">Checkout</a>
+							    <a href="{{route('shopping.paypal')}}" class="btn btn-primary">Pay using Paypal</a>
+							     <a href="{{route('shopping.cod')}}" class="btn btn-primary">Cash On Delivery</a>
 								</span>
 								</div>
 							</td> 
 							</tr>
-				  <!--   </form> -->
+				    </form>
 						</table>
 					</td>
 				</tr>

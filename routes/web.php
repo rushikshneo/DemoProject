@@ -55,13 +55,15 @@
     Route::get('/shopping/{id}/product_details' ,'FrontendController@product')->name('shopping.product_details');
      Route::get('/shopping/checkout/' ,'FrontendController@checkout_product')->name('shopping.checkout');
      // payWithpaypal
-
-Route::get('/shopping/paypal/' ,'FrontendController@paypal')->name('shopping.paypal');
-
-    Route::post('/shopping/payment/' ,'PaypalController@payWithpaypal')->name('shopping.payWithpaypal');
-
+     Route::get('/shopping/paypal/' ,'FrontendController@paypal')->name('shopping.paypal');
+      Route::get('/shopping/cod/' ,'FrontendController@cod')->name('shopping.cod');
+      Route::post('/shopping/payment/' ,'PaypalController@payWithpaypal')->name('shopping.payWithpaypal');
       Route::get('/shopping/status/' ,'PaypalController@getPaymentStatus')->name('shopping.status');
 
+       Route::get('/shopping/{id}/order' , 'FrontendController@userorders')
+       ->name('shopping.userorder');
+
+   
 });
 
 

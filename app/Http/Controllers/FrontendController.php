@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\productattribute;
 use App\Category;
 use App\Product;
+use App\order;
 use Illuminate\Http\Request;
 use App\banner;
 use App\User;
@@ -15,13 +16,14 @@ use Session;
 use Socialite;
 use Illuminate\Support\Facades\URL;
 use App\ProductsAttribute;
+use Currency;
 
 class FrontendController extends Controller
 {
    
   
     public function index()
-    {
+     { 
 
        $category = Category::where(['parent_id'=> 0 ])->get(); 
        $category_menu ="";
@@ -53,7 +55,7 @@ class FrontendController extends Controller
             $result     = $chunks->toArray(); 
        return view('pages.frontend.index',compact('category','category_menu','banners',
            'products','chunks','chunks2','subcat'));
-    }
+     }
 
 
 // public function redirectToProvider($provider)
@@ -111,11 +113,15 @@ class FrontendController extends Controller
 
     public function account(){
         $id          = Auth::User()->id;
-       $userinfo    = User::where('id',$id)->with('user_addresses')->get();
-        // dd($userinfo->id);
-        // $useraddress = user_addresses::where('user_id',$id)->latest()->get();
-        // dd($user_address);
-        return view('pages.frontend.account',compact('userinfo','useraddress'));
+       $userinfo     = User::where('id',$id)->with('user_addresses')->get();
+          $order    = order::where('user_id','=',Auth::user()->id)
+                      ->select('product_id')
+                      ->get();
+                      $order_ids =[];
+                      foreach ($order as $ord) {
+                         array_push($order_ids, $ord->product_id);
+                      }
+        return view('pages.frontend.account',compact('userinfo','order_ids'));
     }
    
     public function update_def_address(Request $request){
@@ -157,7 +163,7 @@ class FrontendController extends Controller
       }
     }
 
-    public function deleteadd($id){
+  public function deleteadd($id){
          $id = user_addresses::find($id);
        if($id->defaultaddress == 0){
            $id->delete();
@@ -197,6 +203,16 @@ class FrontendController extends Controller
        return view('pages.frontend.editaddress',compact('user_add'));    
     }
     
+    
+    public function userorders($id){
+           $order    = order::where('user_id','=',$id)
+                        ->join('products','products.id','orders.id')
+                        ->select('products.name','orders.id','orders.status')
+                        ->get();
+             // dd($order);
+       return view('pages.frontend.order',compact('order'));
+    }
+
     public function userstore(Request $request){
         // dd($request->all());	
         $input = $request->all();
@@ -207,23 +223,83 @@ class FrontendController extends Controller
               Session::put('frontSession', $input['email']);
               return redirect()->route('shopping.login')
                 ->with('success','registration successfully done ! login now.');
-            }
-
+          }
     }
 
     public function paypal(){
+               $order_id=[];
+      $userinfo = User::where('id','=',Auth::user()->id)
+                           ->with('user_addresses')->get();  
       $product = \Cart::session(Auth::user()->id)->getContent();
       $total   = \Cart::session(Auth::user()->id)->getTotal();
-                  Session::put('total',$total);
-     $userinfo = User::where('id','=',Auth::user()->id)
-                          ->where('dedefaultaddress','=','1')
-                        ->with('user_addresses')->get();
-
-      dd($userinfo);                        
+              // dd(count($product));
+          foreach ($product as $product_id) {
+               $order = new order;
+               $order['payment_method'] = "paypal";
+               $order['status']         = "0";
+               $order['total']          = $total;
+               $order['product_id']     = $product_id->id;
+               $order['user_id']        = Auth::user()->id;
+      foreach ($userinfo as $user_info) 
+      {   foreach ($user_info->user_addresses as $billing_add ) {
+           if($billing_add->defaultaddress == 1){
+               $order['billing_address1'] = $billing_add->address1;
+               $order['billing_address2'] = $billing_add->address2;
+               $order['billing_city']     = $billing_add->city;
+               $order['billing_state']    = $billing_add->state;
+               $order['billing_country']  = $billing_add->country;
+               $order['billing_zip']      = $billing_add->zip;
+               $order->save();   
+               array_push($order_id, $order->id);
+           }  
+         }
+      }                
+   }           
+               // dd();
+               Session::put('total' ,$total);   
+               Session::put('id'    ,$order_id);   
       return view('pages.frontend.paypal',compact('userinfo'));
     }
-   
- public function addtocart(Request $request,$Product_id){     
+
+    public function cod(){
+      $userinfo = User::where('id','=',Auth::user()->id)
+                      ->with('user_addresses')->get();  
+      $product = \Cart::session(Auth::user()->id)->getContent();
+      $total   = \Cart::session(Auth::user()->id)->getTotal();
+              
+             foreach ($product as $product_id) {
+               $order = new order;
+               $order['payment_method']="cod";
+               $order['status']="0";
+               $order['total']= $total;
+               $order['product_id']=$product_id->id;
+               $order['user_id']        = Auth::user()->id;
+      foreach ($userinfo as $user_info) 
+      {   foreach ($user_info->user_addresses as $billing_add ) {
+           if($billing_add->defaultaddress == 1){
+               $order['billing_address1'] = $billing_add->address1;
+               $order['billing_address2'] = $billing_add->address2;
+               $order['billing_city']     = $billing_add->city;
+               $order['billing_state']    = $billing_add->state;
+               $order['billing_country']  = $billing_add->country;
+               $order['billing_zip']      = $billing_add->zip;
+               $order->save(); 
+           }  
+         }
+      }   
+       }  
+           $item = \Cart::session(Auth::user()->id)->getContent(); 
+            // dd($item);
+            foreach ($item as $key => $value) {
+             \Cart::session(Auth::user()->id)->remove($key);
+            }   
+               $message="success";
+               return view('pages.frontend.status',compact('message'));  
+               // Session::put('total',$total);      
+      // return view('pages.frontend.paypal',compact('userinfo'));
+    }
+
+    public function addtocart(Request $request,$Product_id){     
        $product_details = Product::where('id','=',$Product_id)->with('images')->get();
        foreach ($product_details as $product_details) {
            foreach ($product_details->images as $value) {
@@ -233,16 +309,17 @@ class FrontendController extends Controller
         }
     }
 
-   public function cart(){
+    public function cart(){
      $item      = \Cart::session(Auth::user()->id)->getContent();
      $sub_total = \Cart::session(Auth::user()->id)->getSubTotal();
      $total     = \Cart::session(Auth::user()->id)->getTotal();
+
      if(count($item)==0){
        return view('pages.frontend.cart',compact('item','sub_total','total'))->with('error','There is no product in Cart .');
      }else{ 
        return view('pages.frontend.cart',compact('item','sub_total','total'));
      }
-   }
+    }
     
     public function removefromcart($id){
       \Cart::session(Auth::user()->id)->remove($id);
@@ -279,11 +356,11 @@ class FrontendController extends Controller
     	}
     }
 
-
     public function forgot(){
       // dd("here");
       return view('pages.frontend.forgot');
     }
+
     public function product($id)
     {
         $category = Category::where(['parent_id'=> 0 ])->get(); 
@@ -316,11 +393,11 @@ class FrontendController extends Controller
         return view('pages.frontend.product',compact('category_menu','chunks','product_details'));
     }
 
-     public function checkout_product(){
-     $item        = \Cart::session(Auth::user()->id)->getContent();
-     $sub_total   = \Cart::session(Auth::user()->id)->getSubTotal();
-     $total       = \Cart::session(Auth::user()->id)->getTotal();
-     $userinfo    = User::where('id','=',Auth::user()->id)->with('user_addresses')->get();
+    public function checkout_product(){
+      $item        = \Cart::session(Auth::user()->id)->getContent();
+      $sub_total   = \Cart::session(Auth::user()->id)->getSubTotal();
+      $total       = \Cart::session(Auth::user()->id)->getTotal();
+      $userinfo    = User::where('id','=',Auth::user()->id)->with('user_addresses')->get();
      // $getcurrent_url= URL::current();
      // $get_page=explode('/', $getcurrent_url)[4]; 
         // dd("here");
@@ -328,7 +405,7 @@ class FrontendController extends Controller
      }
 
     public function login(){
-    	return view('pages.frontend.login');
+      	return view('pages.frontend.login');
     }
 
 }

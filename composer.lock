@@ -4,9 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b423426bd66219c456814c6be4f900d6",
-    "content-hash": "053bea5f07bd0b4f86dec04dfa9b4bb5",
+    "hash": "f135e1a69c5863e052270749db770775",
+    "content-hash": "afbf85021750dc93ce9766b59ee95b67",
     "packages": [
+        {
+            "name": "akibtanjim/currency-converter",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/akibtanjim/currency-converter.git",
+                "reference": "a7f22df8d050fbf4d5ce5a7c4365366d02e5002f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/akibtanjim/currency-converter/zipball/a7f22df8d050fbf4d5ce5a7c4365366d02e5002f",
+                "reference": "a7f22df8d050fbf4d5ce5a7c4365366d02e5002f",
+                "shasum": ""
+            },
+            "require": {
+                "ixudra/curl": "6.*",
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "AkibTanjim\\Currency\\CurrencyServiceProvider"
+                    ],
+                    "aliases": {
+                        "Currency": "AkibTanjim\\Currency\\Facades\\CurrencyConverter"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AkibTanjim\\Currency\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Akib Tanjim",
+                    "email": "akibtanjim@gmail.com"
+                }
+            ],
+            "description": "This package provides currency rates as well as single and multiple currency for Laravel app by using https://openexchangerates.org  API",
+            "keywords": [
+                "conversion",
+                "currency",
+                "currency conversion",
+                "exchange",
+                "laravel",
+                "laravel 5"
+            ],
+            "time": "2018-08-13 16:34:09"
+        },
         {
             "name": "darryldecode/cart",
             "version": "4.0.7",
@@ -697,6 +752,60 @@
                 "watermark"
             ],
             "time": "2019-06-24 14:06:31"
+        },
+        {
+            "name": "ixudra/curl",
+            "version": "6.18.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ixudra/curl.git",
+                "reference": "ff1b23dba264272a7b3a8fef01f73eec23c8fbe7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ixudra/curl/zipball/ff1b23dba264272a7b3a8fef01f73eec23c8fbe7",
+                "reference": "ff1b23dba264272a7b3a8fef01f73eec23c8fbe7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "illuminate/support": ">=4.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Ixudra\\Curl\\CurlServiceProvider"
+                    ],
+                    "aliases": {
+                        "Curl": "Ixudra\\Curl\\Facades\\Curl"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ixudra\\Curl\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Oris",
+                    "email": "jan.oris@ixudra.be"
+                }
+            ],
+            "description": "Custom PHP Curl library for the Laravel 5 framework - developed by Ixudra",
+            "homepage": "http://ixudra.be",
+            "keywords": [
+                "Ixudra",
+                "curl",
+                "laravel"
+            ],
+            "time": "2019-11-02 09:48:26"
         },
         {
             "name": "jakub-onderka/php-console-color",

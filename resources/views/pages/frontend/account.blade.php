@@ -36,6 +36,7 @@ a.btn.btn-danger {
 							<input type="email"  name="email" value="{{$info->email}}" placeholder="Email Address"/>
 						 
 							<button type="submit" class="btn btn-default">Login</button>
+							
 						</form>
 					</div><!--/login form-->
 				</div>
@@ -70,9 +71,16 @@ a.btn.btn-danger {
 							</div>
 							</div><br>
 						    @endforeach
-					  @endforeach
 					</div><!--/sign up form-->
 				</div>
+					
+					<div class="signup-form"><!--sign up form-->
+						<h2>My Orders</h2>
+				    <a href="{{route('shopping.userorder',
+				    $info->id)}}" class="btn btn-primary">My orders</a>
+					</div><!--/sign up form-->
+				         
+					  @endforeach
 			</div>
 		</div>
 	</section><!--/form-->

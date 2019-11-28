@@ -7,8 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
 	protected $fillable = ['name','short_description','long_description','price','special_price','special_price_from','special_price_to','quanity', 'meta_title','meta_description','status','modify_by'];
-
-     public function attributes(){
+    
+    public function order(){
+        return $this->hasMany('App\order','product_id');
+     }   
+    public function attributes(){
     	return $this->hasMany('App\ProductsAttribute','product_id');
     }
 	public function productasso(){
