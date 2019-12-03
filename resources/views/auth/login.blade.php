@@ -161,15 +161,13 @@
           <!-- /.col -->
           <div class="col-4">
             <!-- <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button> -->
-              <button type="submit" class="btn btn-primary btn-block btn-flat">
-                                    {{ __('Login') }}
-                                </button>
-
+            <button type="submit" class="btn btn-primary btn-block btn-flat">
+                {{ __('Login') }}
+            </button>
           </div>
           <!-- /.col -->
         </div>
  <!--      </form> -->
-
   <!--     <div class="social-auth-links text-center mb-3">
         <p>- OR -</p>
         <a href="#" class="btn btn-block btn-primary">
@@ -180,7 +178,6 @@
         </a>
       </div> -->
       <!-- /.social-auth-links -->
-
       <p class="mb-1">
         @if (Route::has('password.request'))
             <a class="text-center" href="{{ route('password.request') }}">

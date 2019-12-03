@@ -16,6 +16,7 @@ class FrontLogin
     public function handle($request, Closure $next)
     {
         if(empty(Session::has('frontSession'))){
+            
            return redirect()->route('shopping.login');
           }
 

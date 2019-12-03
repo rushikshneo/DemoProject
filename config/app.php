@@ -166,7 +166,6 @@ return [
         Laravel\Socialite\SocialiteServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
         AkibTanjim\Currency\CurrencyServiceProvider::class,
-
         /*
          * Package Service Providers...
          */

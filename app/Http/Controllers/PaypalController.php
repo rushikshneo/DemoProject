@@ -117,6 +117,8 @@ class PaypalController extends Controller
              foreach ($item as $key => $value) { 
                order::where('id','=',$order_id)->update(['transaction_id'=>$payment_id,'status'=>"1"]);
                \Cart::session(Auth::user()->id)->remove($key);
+               \Cart::session(Auth::user()->id)->clearCartConditions();
+
               }
             }
            $message="success";

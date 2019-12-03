@@ -99,15 +99,15 @@
 										<div class="product-overlay">
 											<div class="overlay-content">
 												<h2>&#x20b9;{{$product->price}}</h2>
-												 <p><a style="color: white;" href="{{route('shopping.product_details',$product->id)}}">{{$product->name}}</a></p>
+												 <p><a style="color: white;" href="{{route('shopping.product_details',$product->id)}}">{{$product->name}}</a></p>  
 												<a href="{{route('shopping.addtocart',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 											</div>
 										</div>
 								</div>
 								<div class="choose">
 									<ul class="nav nav-pills nav-justified">
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+										<li><a href="{{route('shopping.addwishlist',$product->id)}}"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+										<!-- <li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li> -->
 									</ul>
 								</div>
 							</div>

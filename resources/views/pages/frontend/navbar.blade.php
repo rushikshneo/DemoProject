@@ -59,15 +59,16 @@
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
 							<ul class="nav navbar-nav">
-								@if(empty(Auth::check()))
+								@if(!Auth::check())
 								<li><a href="{{route('shopping.login')}}"><i class="fa fa-lock"></i> Login</a></li>
 								@else
 								<li><a href="{{route('shopping.account')}}"><i class="fa fa-user"></i>Account</a></li>
-								<li><a href="#"><i class="fa fa-star"></i> Wishlist</a></li>
-								<li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Checkout</a></li>
+								<li><a href="{{route('shopping.wishlist')}}"><i class="fa fa-star"></i> Wishlist</a></li>
+								<li><a href=""><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a href="{{route('shopping.cart')}}"><i class="fa fa-shopping-cart"></i>Cart</a></li>
 								<li><a href="{{route('shopping.userlogout')}}"><i class="fa fa-sign-out"></i> Logout</a></li>
-								@endif
+								<!-- 	<li><a href="{{route('shopping.login')}}"><i class="fa fa-lock"></i> Login</a></li> -->
+							@endif
 							</ul>
 						</div>
 					</div>
@@ -110,7 +111,7 @@
                                     </ul>
                                 </li> 
 						<!-- 		<li><a href="404.html">404</a></li> -->
-								<li><a href="contact-us.html">Contact</a></li>
+								<li><a href="{{route('shopping.contactus')}}">Contact</a></li>
 							</ul>
 						</div>
 					</div>

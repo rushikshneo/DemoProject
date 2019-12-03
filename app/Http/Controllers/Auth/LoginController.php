@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Http\Request;
 use App\User;
-
+use Session; 
 use Socialite;
 
 class LoginController extends Controller
@@ -30,6 +30,7 @@ class LoginController extends Controller
      *
      * @var string
      */
+    
     protected $redirectTo = '/';
 
     /**
@@ -42,6 +43,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+
     }
 
     public function login_custom(Request $request){
@@ -50,11 +52,10 @@ class LoginController extends Controller
                     'password'=>$request->password,
             ])){
                     $user = User::Where('email',$request->email)->first();
-                      if($user->is_admin())
+                      if($user->is_admin() && $user->is_active())
                       {   
+                        Session::put('AdminSession',true);
                         return  redirect('/');
-                      }else if($user->is_active()){
-                         return  redirect('/');
                       }else{
                         Auth::logout();
                         return  redirect()->route('login')->with('error','You do not admin access Please contact Admin .');
@@ -86,4 +87,13 @@ class LoginController extends Controller
         return view('auth.login',compact('notactive'));
         // return redirect('/login')->with(compact('notactive'));    
     }
+
+     public function render($request, Exception $exception)
+   {
+    if ($exception instanceof CustomException) {
+        return response()->abort(403, 'Unauthorized action.');
+      }
+
+    return parent::render($request, $exception);
+   }
 }

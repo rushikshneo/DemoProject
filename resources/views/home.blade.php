@@ -120,6 +120,24 @@
               <a href="{{ url('/coupon') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+               @if($order_count != 0)
+                <h3>{{$order_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
+             <a class="title1" href="{{ url('/order') }}"><p>Order<br>Management</p></a>
+              </div>
+              <div class="icon">
+               <i class="fas fa-shopping-cart"></i>
+              </div>
+              <a href="{{ url('/order') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          
 
           <!-- ./col -->
         </div>

@@ -17,6 +17,8 @@ use Socialite;
 use Illuminate\Support\Facades\URL;
 use App\ProductsAttribute;
 use Currency;
+use App\userwishlist;
+use App\coupon;
 
 class FrontendController extends Controller
 {
@@ -24,7 +26,11 @@ class FrontendController extends Controller
   
     public function index()
      { 
-
+          // dd();
+                    $frontend=Session::get('AdminSession');
+       // if ( Session::get('AdminSession')=="true") {
+       //      return abort(401);
+       //  }
        $category = Category::where(['parent_id'=> 0 ])->get(); 
        $category_menu ="";
        foreach ($category as $value){
@@ -54,8 +60,19 @@ class FrontendController extends Controller
             $chunks2    = $collection->chunk(4);
             $result     = $chunks->toArray(); 
        return view('pages.frontend.index',compact('category','category_menu','banners',
-           'products','chunks','chunks2','subcat'));
+           'products','chunks','chunks2','subcat','frontend'));
      }
+
+
+
+   //  public function render($request, Exception $exception)
+   // {
+   //  if ($exception instanceof CustomException) {
+   //      return response()->abort(403, 'Unauthorized action.');
+   //    }
+
+   //  return parent::render($request, $exception);
+   // }
 
 
 // public function redirectToProvider($provider)
@@ -112,11 +129,11 @@ class FrontendController extends Controller
 
 
     public function account(){
-        $id          = Auth::User()->id;
-       $userinfo     = User::where('id',$id)->with('user_addresses')->get();
-          $order    = order::where('user_id','=',Auth::user()->id)
-                      ->select('product_id')
-                      ->get();
+        $id           = Auth::User()->id;
+        $userinfo     = User::where('id',$id)->with('user_addresses')->get();
+        $order        = order::where('user_id','=',Auth::user()->id)
+                        ->select('product_id')->orderBy('id','DESC')
+                        ->get();
                       $order_ids =[];
                       foreach ($order as $ord) {
                          array_push($order_ids, $ord->product_id);
@@ -146,14 +163,16 @@ class FrontendController extends Controller
         return view('pages.frontend.address',compact('id'));
     } 
 
-   
+   public function contactus(){
+    return view('pages.frontend.contactus');
+   }
 
     public function updateaddress(Request $request,$id){
        // dd($request->all());
       $data = $request->all();
       $user_add = user_addresses::where('id','=',$id)->update(['address1'=>$data['address1'],'address2'=>$data['address2'],'zip'=>$data['zip'],'city'=>$data['city'],'state'=>$data['state'],'country'=>$data['country'],'user_id'=> Auth::user()->id]);
       $getcurrent_url= URL::previous();
-      $get_page=explode('/', $getcurrent_url)[4];
+      $get_page = explode('/', $getcurrent_url)[4];
       if($get_page=="checkout"){
       return redirect()->route('shopping.checkout')
                        ->with('success','Address updated successfully.');
@@ -207,18 +226,27 @@ class FrontendController extends Controller
     public function userorders($id){
            $order    = order::where('user_id','=',$id)
                         ->join('products','products.id','orders.id')
-                        ->select('products.name','orders.id','orders.status')
+                        ->select('products.name','orders.id','orders.status','orders.payment_method','orders.billing_address1','orders.billing_address2','orders.billing_city','orders.billing_state','orders.billing_country','orders.billing_zip')->orderBy('id','DESC')
                         ->get();
              // dd($order);
        return view('pages.frontend.order',compact('order'));
     }
 
     public function userstore(Request $request){
-        // dd($request->all());	
+         // dd($request->all());	
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
+        //emailsend
+         // $email   = $request->email;
+         // $subject="registration Mail"
+         // $message =  [
+         //              'email'=> $request->email,
+         //              'name' => $request->firstname ,
+         //              'password'=>$request->password,
+         //             ];
+         // Mail::send($email, $subject, $message);
         if(Auth::attempt(['email'=>$input['email'],'password'=>$input['password']])){
               Session::put('frontSession', $input['email']);
               return redirect()->route('shopping.login')
@@ -227,12 +255,14 @@ class FrontendController extends Controller
     }
 
     public function paypal(){
-               $order_id=[];
-      $userinfo = User::where('id','=',Auth::user()->id)
+      $order_id   = [];
+      $userinfo   = User::where('id','=',Auth::user()->id)
                            ->with('user_addresses')->get();  
-      $product = \Cart::session(Auth::user()->id)->getContent();
-      $total   = \Cart::session(Auth::user()->id)->getTotal();
-              // dd(count($product));
+      $product    = \Cart::session(Auth::user()->id)->getContent();
+      $total      = \Cart::session(Auth::user()->id)->getTotal();
+      $conditions = \Cart::session(Auth::user()->id)->getConditions();
+      // coupon::where('id','=',$value->id)->update(['no_of_uses'=>$value->no_of_uses-1]);
+      // dd(count($product));
           foreach ($product as $product_id) {
                $order = new order;
                $order['payment_method'] = "paypal";
@@ -240,6 +270,13 @@ class FrontendController extends Controller
                $order['total']          = $total;
                $order['product_id']     = $product_id->id;
                $order['user_id']        = Auth::user()->id;
+             foreach ($conditions as $key => $value){
+               $order['applied_coupons']= $key;
+               $coupon=coupon::where('coupon_code','=',$key)->get();
+               foreach ($coupon as $coupon_code ){
+                 coupon::where('coupon_code','=',$key)->update(['no_of_uses'=> $coupon_code->no_of_uses-1]); 
+                 }
+               }
       foreach ($userinfo as $user_info) 
       {   foreach ($user_info->user_addresses as $billing_add ) {
            if($billing_add->defaultaddress == 1){
@@ -255,7 +292,6 @@ class FrontendController extends Controller
          }
       }                
    }           
-               // dd();
                Session::put('total' ,$total);   
                Session::put('id'    ,$order_id);   
       return view('pages.frontend.paypal',compact('userinfo'));
@@ -266,7 +302,7 @@ class FrontendController extends Controller
                       ->with('user_addresses')->get();  
       $product = \Cart::session(Auth::user()->id)->getContent();
       $total   = \Cart::session(Auth::user()->id)->getTotal();
-              
+                 
              foreach ($product as $product_id) {
                $order = new order;
                $order['payment_method']="cod";
@@ -288,8 +324,7 @@ class FrontendController extends Controller
          }
       }   
        }  
-           $item = \Cart::session(Auth::user()->id)->getContent(); 
-            // dd($item);
+             $item = \Cart::session(Auth::user()->id)->getContent(); 
             foreach ($item as $key => $value) {
              \Cart::session(Auth::user()->id)->remove($key);
             }   
@@ -299,54 +334,135 @@ class FrontendController extends Controller
       // return view('pages.frontend.paypal',compact('userinfo'));
     }
 
-    public function addtocart(Request $request,$Product_id){     
+     public function wishlisist(){
+       $user= userwishlist::with('product')->get();
+       // dd($user);
+       return view('pages.frontend.wishlist',compact('user'));
+     }
+
+    public function addwishlist($id){
+      $product = product::where('id','=',$id)->get();
+      $user_wishlist = new userwishlist;
+      $user_wishlist['user_id'] = Auth::user()->id;
+      $user_wishlist['product_id']= $id;
+      $user_wishlist->save();
+       Session::put('comefrom','wishlist');
+      return redirect()->route('shopping.wishlist')->with('success','The Product Added to the your wishlist.');
+    }
+
+     public function removewishlist($id){
+       $user_wishlist = userwishlist::find($id)->delete();
+       return redirect()->route('shopping.wishlist')->with('success','The item is removed from your wishlist .');
+     }
+
+     public function coupon(Request $request){
+      // dd($request->all());
+        $product_id = $request->product_id;
+        $couponcode = $request->couponcode;
+        $coupon_value = coupon::where('coupon_code','=',$couponcode)->select('percent_off','no_of_uses','id')->get();
+             // dd()
+        $coupon_used = order::where('user_id','=',Auth::user()->id)
+                        ->where('applied_coupons','=',$couponcode)->count();
+                        // dd($coupon_used);
+        foreach ($coupon_value as $key => $value) {
+        if($coupon_used <= $value->no_of_uses)
+        {
+      if($value->no_of_uses >= 1)
+      {
+        $cartCondition   = new CartCondition([
+            'name'       => $couponcode,
+            'type'       =>'coupon',
+            'target'     =>'total',
+            'value'      =>'-'.$value->percent_off.'%',
+            'attributes' => array()
+         ]);
+         \Cart::session(Auth::user()->id)->condition($cartCondition);
+         return redirect()->route('shopping.cart')->with('success','Coupon Code applied successfully.');
+         }else{
+          return redirect()->route('shopping.cart')->with('success','Coupon Code limit exceed .');
+            }
+         }else{
+      return redirect()->route('shopping.cart')->with('success','Coupon Code already used.');
+      }
+   
+    }
+   }
+
+    public function addtocart(Request $request,$Product_id){    
+       // $getcurrent_url= URL::previous();
+       // $get_page =explode('/', $getcurrent_url)[4]; .
+      // dd(Session::get('comefrom')); 
+       if(Session::get('comefrom') =="wishlist"){
+         $user_wishlist = userwishlist::where('product_id','=',$Product_id);
+         $user_wishlist->delete();
+         Session::forget('comefrom');
+       }
        $product_details = Product::where('id','=',$Product_id)->with('images')->get();
        foreach ($product_details as $product_details) {
            foreach ($product_details->images as $value) {
           $item = \Cart::session(Auth::user()->id)->add(['id' => $product_details->id, 'name' => $product_details->name, 'quantity' =>1 , 'price' => $product_details->price, 'image_url' => $value->image_url, 'options' => ['size' => 'large']]);
-          return redirect()->route('shopping.cart')->with('success','item added successfully.');
+          return redirect()->route('shopping.cart')->with('success','Product Added Successfully.');
            }
         }
     }
 
     public function cart(){
-     $item      = \Cart::session(Auth::user()->id)->getContent();
-     $sub_total = \Cart::session(Auth::user()->id)->getSubTotal();
-     $total     = \Cart::session(Auth::user()->id)->getTotal();
-
+     $item       = \Cart::session(Auth::user()->id)->getContent();
+     $sub_total  = \Cart::session(Auth::user()->id)->getSubTotal();
+     $total      = \Cart::session(Auth::user()->id)->getTotal();
+     $conditions = \Cart::session(Auth::user()->id)->getConditions();
      if(count($item)==0){
-       return view('pages.frontend.cart',compact('item','sub_total','total'))->with('error','There is no product in Cart .');
+       return view('pages.frontend.cart',compact('item','sub_total','total','conditions'))->with('error','There is no product in Cart .');
      }else{ 
-       return view('pages.frontend.cart',compact('item','sub_total','total'));
+       return view('pages.frontend.cart',compact('item','sub_total','total','conditions'));
      }
     }
     
     public function removefromcart($id){
       \Cart::session(Auth::user()->id)->remove($id);
+      \Cart::session(Auth::user()->id)->clearCartConditions();
       return redirect()->route('shopping.cart')
                         ->with('success','Product remove from cart successfully');
     }
 
     public function userlogout(){
+
         Auth::logout();
-        Session::forget('frontSession');
+        // Session::forget('AdminSession');
+        Session::forget('FrontSession');
         return redirect()->route('shopping.home');
     }
+
+  public function removecoupon(Request $request){
+        \Cart::session(Auth::user()->id)->clearCartConditions();
+        return response(array(
+            'success' => true,
+            'data' => [],
+            'message' => "Applied cart coupon cleared."
+        ),200,[]);
+    }
+
+     public function userdetails(Request $request){
+         $user_details = $request->all();
+         User::where('id','=',Auth::user()->id)->update(['firstname'=>$user_details['firstname'],'lastname'=>$user_details['lastname'],'email'=>$user_details['email']]);
+         return redirect()->route('shopping.account')->with('success','Your Account Details Updated Successfully');
+     }
 
     public function userverify(Request $request){
     	if($request->isMethod('post')){
     		$data = $request->all();
     		if(Auth::attempt(['email'=>$data['email'],'password'=>$data['password']])){
+            Session::put('FrontSession',true);
             $user = User::Where('email',$request->email)
-                         ->Where('status','0')
+                         ->Where('status','=','0')
                          ->first();
-                if($user->is_admin()==false)
-                { 
+                // if($user->is_admin()== false)
+                // { 
                   Session::put('frontSession',$data['email']);
                   return redirect()->route('shopping.home');
-                }
+                // }
     		}else{
-    			  return redirect()->back()->with('error','Invalid User.');
+    			      return redirect()->back()->with('error','Invalid User.');
                  // if(Auth::user()->role == "Customer")
                  // {
                  //   return redirect()->back()->with('error','Invalid Username or Password.');
@@ -357,7 +473,6 @@ class FrontendController extends Controller
     }
 
     public function forgot(){
-      // dd("here");
       return view('pages.frontend.forgot');
     }
 
@@ -405,6 +520,9 @@ class FrontendController extends Controller
      }
 
     public function login(){
+      // if ( Session::get('AdminSession')=="true") {
+      //       return abort(401);
+      //   }
       	return view('pages.frontend.login');
     }
 

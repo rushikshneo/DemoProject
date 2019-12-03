@@ -22,5 +22,8 @@ class Product extends Model
     }  
      public function category(){
         return $this->hasMany('App\product_categories','product_id');
-    }   
+    }  
+    public function userwishlist(){
+        return $this->hasMany('App\userwishlist','product_id');
+     }   
 }

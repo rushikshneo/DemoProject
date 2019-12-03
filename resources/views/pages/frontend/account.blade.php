@@ -26,7 +26,8 @@ a.btn.btn-danger {
 				<div class="col-sm-4 col-sm-offset-1">
 					<div class="login-form"><!--login form-->
 						<h2>User Account </h2>
-						<form action="#">
+						<form action="{{route('shopping.userdetails')}}" method="POST">
+							@csrf
 							@foreach($userinfo as $info)
 							<label>First Name </label>
 							<input type ="text"  name="firstname" value="{{$info->firstname}}" placeholder="First Name"/>
@@ -34,9 +35,7 @@ a.btn.btn-danger {
 							<input type ="text"  name="lastname" value="{{$info->lastname}}" placeholder="Last Name"/>
 							<label>Email </label>
 							<input type="email"  name="email" value="{{$info->email}}" placeholder="Email Address"/>
-						 
-							<button type="submit" class="btn btn-default">Login</button>
-							
+							<button type="submit" class="btn btn-default">Update</button>
 						</form>
 					</div><!--/login form-->
 				</div>
@@ -79,7 +78,6 @@ a.btn.btn-danger {
 				    <a href="{{route('shopping.userorder',
 				    $info->id)}}" class="btn btn-primary">My orders</a>
 					</div><!--/sign up form-->
-				         
 					  @endforeach
 			</div>
 		</div>
@@ -96,9 +94,8 @@ a.btn.btn-danger {
                 id: defaultaddress_id,
               }
           }).done(
-          	      
           	      alert("Default address is updated")
-      	    );
+      	        );
 		});
 	});
 	

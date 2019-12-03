@@ -7,6 +7,7 @@
 		width: 50px;
 		}
 	</style>
+	 <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 		<div class="container">
 		@if ($message = Session::get('success'))
 		<div class="alert alert-success alert-block">
@@ -14,7 +15,7 @@
 			<strong>{{ $message }}</strong>
 		  </div>
 		@endif
-
+		
 			<div class="breadcrumbs">
 				<ol class="breadcrumb">
 				  <li><a href="#">Home</a></li>
@@ -35,8 +36,8 @@
 						</tr>
 					</thead>
 					<tbody>
+			 @foreach($item as $cartadded)
 					@if(count($item)!=0)
-					  @foreach($item as $cartadded)
 						<tr>
 							<td class="cart_product">
 								<a href=""><img class="cart_image" src="{{URL::asset($cartadded->image_url)}}" alt=""></a>
@@ -66,10 +67,11 @@
         		</form>
 			   </td>
 			</tr>
-			 @endforeach
+			
 			@else
 			 <tr> <td><p>No Products in Cart.</p></td></tr>
 			@endif
+		  @endforeach
 						<!-- <tr>
 							<td class="cart_product">
 								<a href=""><img src="images/cart/two.png" alt=""></a>
@@ -136,68 +138,45 @@
 				<div class="col-sm-6">
 					<div class="chose_area">
 						<ul class="user_option">
-							<li>
-								<input  type="checkbox">
-								<label>Use Coupon Code</label>
-							</li>
-							<li>
-								<input  type="checkbox">
-								<label>Use Gift Voucher</label>
-							</li>
-							<li>
-								<input  type="checkbox">
-								<label>Estimate Shipping & Taxes</label>
-							</li>
 						</ul>
+					  <form method="POST" action="{{route('shopping.coupon')}}">
 						<ul class="user_info">
+							@csrf           
+						    @foreach($item as $cartadded)
+							<input hidden type="number" name="product_id" value="{{$cartadded->id}}">
+						    @endforeach
 							<li class="single_field">
-								<label>Country:</label>
-								<select>
-									<option>United States</option>
-									<option>Bangladesh</option>
-									<option>UK</option>
-									<option>India</option>
-									<option>Pakistan</option>
-									<option>Ucrane</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
-								
+								<label>Coupon Code:</label>
 							</li>
-							<li class="single_field">
-								<label>Region / State:</label>
-								<select>
-									<option>Select</option>
-									<option>Dhaka</option>
-									<option>London</option>
-									<option>Dillih</option>
-									<option>Lahore</option>
-									<option>Alaska</option>
-									<option>Canada</option>
-									<option>Dubai</option>
-								</select>
+							<li>
+								<input type="text" name="couponcode">
+							</li>
 							
-							</li>
-							<li class="single_field zip-field">
-								<label>Zip Code:</label>
-								<input type="text">
-							</li>
 						</ul>
-						<a class="btn btn-default update" href="">Get Quotes</a>
-						<a class="btn btn-default check_out" href="">Continue</a>
+						<button class="btn btn-default update" type="submit">Apply</button>
+						</form>
 					</div>
 				</div>
 				<div class="col-sm-6">
 					<div class="total_area">
+
 						<ul>
+							<!-- type,target,value -->
 							<li>Cart Sub Total <span>&#x20b9;{{$sub_total}}</span></li>
-							<li>Eco Tax <span>2</span></li>
+							<!-- <li>Eco Tax <span>2</span></li> -->
 							<li>Shipping Cost <span>Free</span></li>
+                              @foreach($conditions as $key => $value)
+							<li>Applied Coupons <span> {{$key}}
+							 <a class="btn btn-danger remove">x</a>
+							 </span> 
+							 
+							</li>
+                              @endforeach
 							<li>Total <span>&#x20b9;{{$total}}</span></li>
 						</ul>
-							<a class="btn btn-default update" href="">Update</a>
+							<!-- <a class="btn btn-default update" href="">Update</a> -->
 							@if(count($item)!= 0)
-									<a class="btn btn-default check_out" href="{{route('shopping.checkout')}}">Check Out</a>
+									<a class="btn btn-default update" href="{{route('shopping.checkout')}}">Check Out</a>
 							@endif
 					</div>
 				</div>
@@ -205,4 +184,16 @@
 		</div>
 	</section><!--/#do_action-->
 
+<script type="text/javascript">
+	 $(document).on('click','.remove',function() {
+    $.ajax({
+        type: "GET",
+        url: "/shopping/removecoupon",
+
+      }).then(function(success) {
+     	   location.reload();
+     	   alert(success.message);
+          });  
+    });
+</script>
 @endsection
