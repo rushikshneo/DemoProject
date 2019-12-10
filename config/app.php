@@ -165,7 +165,9 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
         Darryldecode\Cart\CartServiceProvider::class,
-        AkibTanjim\Currency\CurrencyServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
+
+
         /*
          * Package Service Providers...
          */
@@ -175,6 +177,7 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
+        Unisharp\Ckeditor\ServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
@@ -233,6 +236,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Cart' => Darryldecode\Cart\Facades\CartFacade::class,
         'Currency'=> AkibTanjim\Currency\Facades\CurrencyConverter::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

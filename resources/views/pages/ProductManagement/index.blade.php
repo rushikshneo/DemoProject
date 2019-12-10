@@ -62,7 +62,6 @@ img.product_img {
         <tbody>
        @foreach($products as $product)
         <tr >
-      
           @foreach($products_cat as $cat)
             @if($product->id == $cat->product_id)
             <td>{{$cat->category_id}}</td>

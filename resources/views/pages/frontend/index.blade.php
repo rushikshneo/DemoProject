@@ -1,5 +1,7 @@
 @extends('pages.frontend.master2')
 @section('content') 
+
+
 <section id="slider"><!--slider-->
 		<div class="container">
 			<div class="row">
@@ -94,7 +96,11 @@
 											@endforeach
 											<h2>&#x20b9;{{$product->price}}</h2>
 											<p>{{$product->name}}</p>
+											@if(Auth::check())
 											<a href="{{route('shopping.addtocart',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											@else
+											<a href="{{route('shopping.login',$product->id)}}" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											@endif
 										</div>
 										<div class="product-overlay">
 											<div class="overlay-content">
@@ -122,6 +128,12 @@
                 </div>
 					
 					<div class="recommended_items"><!--recommended_items-->
+					@if ($message = Session::get('success'))
+						<div class="alert alert-success alert-block">
+							<button type="button" class="close" data-dismiss="alert" style="color: white;">×</button> 
+							<strong>{{ $message }}</strong>
+						</div>
+					@endif
 						<h2 class="title text-center">recommended items</h2>
 					<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
 							<div class="carousel-inner">

@@ -6,6 +6,7 @@
         <!-- Small boxes (Stat box) -->
         <div class="content">
         <h1><b>Dash</b>Board</h1>
+        <a href="{{route('report.index')}}" style="margin-left:90%;margin-top:-90px;" class="btn btn-primary btn-sm">Reports</a>
         </div>
         <hr>
         <div class="row">
@@ -85,7 +86,7 @@
 
            <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-success">
+            <div class="small-box bg-orange ">
               <div class="inner">
                  @if($product_count != 0)
                 <h3>{{$product_count}}</h3>
@@ -104,7 +105,7 @@
 
              <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-danger">
+            <div class="small-box bg-blue">
               <div class="inner">
                  @if($coupons_count != 0)
                 <h3>{{$coupons_count}}</h3>
@@ -122,7 +123,7 @@
           </div>
           <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box bg-info">
+            <div class="small-box bg-pink">
               <div class="inner">
                @if($order_count != 0)
                 <h3>{{$order_count}}</h3>
@@ -137,11 +138,29 @@
               <a href="{{ url('/order') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          
-
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-gray">
+              <div class="inner">
+                  @if($email_count != 0)
+                <h3>{{$email_count}}</h3>
+                @else
+                <h3>0</h3>
+                @endif
+             <a class="title1" href="{{ url('/email') }}"><p>Email<br>Management</p></a>
+              </div>
+              <div class="icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <a href="{{ url('/email') }}" class="small-box-footer">More info<i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
           <!-- ./col -->
+
+          </div>
         </div>
-        <!-- /.row -->
+           
+  <!-- /.row -->
       </div>
     </section>
 

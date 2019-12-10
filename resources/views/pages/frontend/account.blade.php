@@ -22,6 +22,12 @@ a.btn.btn-danger {
 			<strong>{{ $message }}</strong>
 			</div>
 			@endif
+		    @if ($message = Session::get('error'))
+			<div class="alert alert-danger alert-block">
+			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+			<strong>{{ $message }}</strong>
+			</div>
+			@endif
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-1">
 					<div class="login-form"><!--login form-->

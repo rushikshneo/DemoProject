@@ -35,7 +35,7 @@ class UserController extends Controller
                  where('id','!=',Auth::user()->id)
                  ->paginate(5);
         $user_role=User::select('role','id')->get();
-        // dd($user_role);
+        // dd($users);
         return view('pages.UserManagement.index',compact('users','user_role'));
     }  
     public function create()

@@ -19,6 +19,11 @@ use App\ProductsAttribute;
 use Currency;
 use App\userwishlist;
 use App\coupon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendMailable;
+use App\email;
+use App\contactus;
+use Newsletter;
 
 class FrontendController extends Controller
 {
@@ -63,6 +68,8 @@ class FrontendController extends Controller
            'products','chunks','chunks2','subcat','frontend'));
      }
 
+
+   
 
 
    //  public function render($request, Exception $exception)
@@ -123,11 +130,6 @@ class FrontendController extends Controller
 //        }
 //    }
 
-
-
-
-
-
     public function account(){
         $id           = Auth::User()->id;
         $userinfo     = User::where('id',$id)->with('user_addresses')->get();
@@ -158,14 +160,52 @@ class FrontendController extends Controller
        }
     }
 
-
+   public function email_register(){
+    // dd("here");
+        $email = email::get();
+        return view('pages.frontend.email.contact_us',compact('email'));
+    } 
     public function useraddress($id){
         return view('pages.frontend.address',compact('id'));
     } 
 
    public function contactus(){
+
     return view('pages.frontend.contactus');
    }
+
+    public function contactus_store(Request $request){
+       $contactus_data = new contactus;
+       $contactus_data['name']=$request->name;
+       $contactus_data['email']=$request->email;
+       $contactus_data['subject']=$request->subject;
+       $contactus_data['message']=$request->message;
+       $contactus_data->save();
+       
+         $email = email::where('email_name','=','Contact us')->get();
+         foreach ($email as $value) {
+            $email_content=[
+                              'email_header'=> $value->email_header,
+                              'email_footer'=> $value->email_footer,
+                              'name'        => $contactus_data->name,
+                              'email'       => $contactus_data->email,
+                              'messages'     => $contactus_data->message,
+                            ];
+                    // dd($email_content['message']);
+         }     
+        $admin = user::where('role','=','SuperAdmin')->pluck('email');
+        Mail::send('pages.frontend.email.contact_us',$email_content,function ($m) use ($admin) {
+             
+            $m->from('hello@app.com', 'Shopping Chart');
+             $admin = user::where('role','=','SuperAdmin')->pluck('email');
+            foreach ($admin as $key => $value) {
+            $m->to($value)->subject('New Query'); 
+            }
+        });
+
+       return redirect()->route('shopping.contactus')->with('success','Thank you for Contacting us Admin Will Contact you as soon as possible.') ;
+      }
+   
 
     public function updateaddress(Request $request,$id){
        // dd($request->all());
@@ -200,6 +240,7 @@ class FrontendController extends Controller
     }
 
     public function storeuseradd(Request $request,$id){
+
         if($request->isMethod('post'))
         {
             $data             = new user_addresses;
@@ -210,6 +251,13 @@ class FrontendController extends Controller
             $data['state']    = $request->state;
             $data['country']  = $request->country;
             $data['user_id']  = $id;
+            $user_add = user_addresses::where('user_id','=',$id)->count();
+            if($user_add != 0)
+            {
+               $data['defaultaddress']  = '0';
+            }else{
+              $data['defaultaddress']  = '1';
+            }
             $data->save();
             return redirect()->route('shopping.account')
                            ->with('success','Address added successfully.');
@@ -233,25 +281,44 @@ class FrontendController extends Controller
     }
 
     public function userstore(Request $request){
-         // dd($request->all());	
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
-        //emailsend
-         // $email   = $request->email;
-         // $subject="registration Mail"
-         // $message =  [
-         //              'email'=> $request->email,
-         //              'name' => $request->firstname ,
-         //              'password'=>$request->password,
-         //             ];
-         // Mail::send($email, $subject, $message);
-        if(Auth::attempt(['email'=>$input['email'],'password'=>$input['password']])){
+        $this->email_register();
+        $email = email::where('email_name','=','Registration Email')->get();
+         foreach ($email as $value) {
+            $email_content=[
+                              'email_content'=> $value->email_main_content,
+                              'email'=>$user->email,
+                              'password'=>$user->password_confirmation,
+                            ];
+         }     
+            foreach ($email as $value) {
+            $email_ad_cont = [
+                              'email_content'=> $value->email_content,
+                              'email'=>$user->email,
+                             ];
+         }
+          
+        Mail::send('pages.frontend.email.register', $email_content , function ($m) use ($user) {
+             // dd($user);
+            $m->from('hello@app.com', 'Shopping Chart');
+            $m->to($user->email, $user->firstname)->subject('Your Reminder!');
+        });
+       Mail::send('pages.frontend.email.register', $email_ad_cont , function ($m) use ($user) {
+            $m->from('hello@app.com','Shopping Chart');
+            $admin = user::where('role','=','SuperAdmin')->pluck('email');
+            foreach ($admin as $key => $value) {
+             $m->to($value , $user->firstname)->subject('New User Registration');  
+            }
+        });
               Session::put('frontSession', $input['email']);
               return redirect()->route('shopping.login')
-                ->with('success','registration successfully done ! login now.');
-          }
+                ->with('success','registration successfully done ! login now using Email Details.');
+        // if(Auth::attempt(['email'=>$input['email'],'password'=>$input['password']])){
+        //     // dd("here");
+        //   }
     }
 
     public function paypal(){
@@ -288,6 +355,37 @@ class FrontendController extends Controller
                $order['billing_zip']      = $billing_add->zip;
                $order->save();   
                array_push($order_id, $order->id);
+              $email = email::where('email_name','=','order Email')->get();
+         foreach ($email as $value) {
+              $productname = Product::where('id','=', $order->product_id)->pluck('name');
+            foreach ($productname as $key => $pro_name) {
+            $email_content=[
+                              'email_header'=> $value->email_header,
+                              'email_main_content'=> $value->email_main_content,
+                              'email_footer'=>$value->email_footer,
+                              'quantity'=>'1',
+                              'unit_price'=>$order->total,
+                              'total'=>$order->total,
+                              'product'=> $pro_name,
+                              'billing_address1'=>$order->billing_address1,
+                              'billing_address2'=>$order->billing_address2,
+                              'billing_city'=>$order->billing_city,
+                              'billing_state'=>$order->billing_state,
+                              'billing_country'=>$order->billing_country,
+                              'billing_zip'=>$order->billing_zip,
+                              'ordermethod'=>$order->payment_method,
+                            ];
+                            
+                   }
+         }     
+         $user= User::where('id','=',Auth::user()->id)->get();
+        Mail::send('pages.frontend.email.order', $email_content , function ($m) use ($user) {
+            $m->from('hello@app.com', 'Shopping Chart');
+            foreach ($user as $key =>$value) {
+             $m->to($value->email)->subject('Order Details');
+            }
+        });
+            
            }  
          }
       }                
@@ -320,6 +418,37 @@ class FrontendController extends Controller
                $order['billing_country']  = $billing_add->country;
                $order['billing_zip']      = $billing_add->zip;
                $order->save(); 
+
+                     $email = email::where('email_name','=','order Email')->get();
+         foreach ($email as $value) {
+              $productname = Product::where('id','=', $order->product_id)->pluck('name');
+            foreach ($productname as $key => $pro_name) {
+            $email_content=[
+                              'email_header'=> $value->email_header,
+                              'email_main_content'=> $value->email_main_content,
+                              'email_footer'=>$value->email_footer,
+                              'quantity'=>'1',
+                              'unit_price'=>$order->total,
+                              'total'=>$order->total,
+                              'product'=> $pro_name,
+                              'billing_address1'=>$order->billing_address1,
+                              'billing_address2'=>$order->billing_address2,
+                              'billing_city'=>$order->billing_city,
+                              'billing_state'=>$order->billing_state,
+                              'billing_country'=>$order->billing_country,
+                              'billing_zip'=>$order->billing_zip,
+                              'ordermethod'=>$order->payment_method,
+                            ];
+                            
+                   }
+         }     
+         $user= User::where('id','=',Auth::user()->id)->get();
+        Mail::send('pages.frontend.email.order', $email_content , function ($m) use ($user) {
+            $m->from('hello@app.com', 'Shopping Chart');
+            foreach ($user as $key =>$value) {
+             $m->to($value->email)->subject('Order Details');
+            }
+        });
            }  
          }
       }   
@@ -331,7 +460,7 @@ class FrontendController extends Controller
                $message="success";
                return view('pages.frontend.status',compact('message'));  
                // Session::put('total',$total);      
-      // return view('pages.frontend.paypal',compact('userinfo'));
+               // return view('pages.frontend.paypal',compact('userinfo'));
     }
 
      public function wishlisist(){
@@ -341,13 +470,19 @@ class FrontendController extends Controller
      }
 
     public function addwishlist($id){
-      $product = product::where('id','=',$id)->get();
-      $user_wishlist = new userwishlist;
-      $user_wishlist['user_id'] = Auth::user()->id;
-      $user_wishlist['product_id']= $id;
-      $user_wishlist->save();
-       Session::put('comefrom','wishlist');
+
+       if(Auth::check())
+        {
+          $product = product::where('id','=',$id)->get();
+          $user_wishlist = new userwishlist;
+          $user_wishlist['user_id'] = Auth::user()->id;
+          $user_wishlist['product_id']= $id;
+          $user_wishlist->save();
+          Session::put('comefrom','wishlist');
       return redirect()->route('shopping.wishlist')->with('success','The Product Added to the your wishlist.');
+    }else{
+      return redirect()->route('shopping.login');
+    }
     }
 
      public function removewishlist($id){
@@ -389,9 +524,8 @@ class FrontendController extends Controller
    }
 
     public function addtocart(Request $request,$Product_id){    
-       // $getcurrent_url= URL::previous();
-       // $get_page =explode('/', $getcurrent_url)[4]; .
-      // dd(Session::get('comefrom')); 
+      if(Auth::check())
+      {
        if(Session::get('comefrom') =="wishlist"){
          $user_wishlist = userwishlist::where('product_id','=',$Product_id);
          $user_wishlist->delete();
@@ -400,10 +534,13 @@ class FrontendController extends Controller
        $product_details = Product::where('id','=',$Product_id)->with('images')->get();
        foreach ($product_details as $product_details) {
            foreach ($product_details->images as $value) {
-          $item = \Cart::session(Auth::user()->id)->add(['id' => $product_details->id, 'name' => $product_details->name, 'quantity' =>1 , 'price' => $product_details->price, 'image_url' => $value->image_url, 'options' => ['size' => 'large']]);
+          $item = \Cart::session(Auth::user()->id)->add(['id' => $product_details->id, 'name' => $product_details->name, 'quantity' => 1 , 'price' => $product_details->price, 'image_url' => $value->image_url, 'options' => ['size' => 'large']]);
           return redirect()->route('shopping.cart')->with('success','Product Added Successfully.');
            }
         }
+      }else{
+        return redirect()->route('shopping.login');
+      }
     }
 
     public function cart(){
@@ -513,17 +650,47 @@ class FrontendController extends Controller
       $sub_total   = \Cart::session(Auth::user()->id)->getSubTotal();
       $total       = \Cart::session(Auth::user()->id)->getTotal();
       $userinfo    = User::where('id','=',Auth::user()->id)->with('user_addresses')->get();
+
+         foreach ($userinfo as $value) {
+           if(count($value->user_addresses)== 0)
+           {
+           return redirect()->route('shopping.account')->with('error','Please Add Address for shipping.'); 
+           }else{
+           return view('pages.frontend.checkout',compact('item','sub_total','total','userinfo'));
+           }
+
+         }
      // $getcurrent_url= URL::current();
      // $get_page=explode('/', $getcurrent_url)[4]; 
-        // dd("here");
-     return view('pages.frontend.checkout',compact('item','sub_total','total','userinfo'));
      }
 
     public function login(){
       // if ( Session::get('AdminSession')=="true") {
       //       return abort(401);
       //   }
-      	return view('pages.frontend.login');
+        $email = email::get();
+      	return view('pages.frontend.login',compact('email'));
     }
 
+
+    public function newsletter(){
+      return view('pages.frontend.newsletter');
+    }
+    public function  newsletter_subscribe(Request $request){
+
+        if ( ! Newsletter::isSubscribed($request->user_email) ) {
+          Newsletter::subscribe($request->user_email);
+        return redirect()->route('shopping.newsletter')
+              ->with('success','Thank you for subscribtion.');        
+      }else{
+        return redirect()->route('shopping.newsletter')
+              ->with('error','you have been already subscribed the newsletter .');
+      }  
+
+      if(Newsletter::subscribePending($request->user_email)){
+        return redirect()->route('shopping.newsletter')
+              ->with('error','There is some Problem with subscribtion.');
+        }
+    
+    }
 }

@@ -35,10 +35,11 @@ class HomeController extends Controller
         $categories_count = DB::table('categories')->count(); 
         $coupons_count    = DB::table('coupons')->count();
         $product_count    = DB::table('products')->count();
-        $order_count    = DB::table('orders')->count();
+        $order_count      = DB::table('orders')->count();
+        $email_count      = DB::table('emails')->count();
         // dd($categories_count);             
         return view('home',compact('users_count','config_count','banner_count',
-              'categories_count','coupons_count','product_count','order_count'));
+              'categories_count','coupons_count','product_count','order_count','email_count'));
 
     }
 

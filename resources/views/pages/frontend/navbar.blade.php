@@ -68,7 +68,7 @@
 								<li><a href="{{route('shopping.cart')}}"><i class="fa fa-shopping-cart"></i>Cart</a></li>
 								<li><a href="{{route('shopping.userlogout')}}"><i class="fa fa-sign-out"></i> Logout</a></li>
 								<!-- 	<li><a href="{{route('shopping.login')}}"><i class="fa fa-lock"></i> Login</a></li> -->
-							@endif
+							   @endif
 							</ul>
 						</div>
 					</div>
@@ -104,14 +104,16 @@
 										
                                     </ul>
                                 </li>  -->
-								<li class="dropdown"><a href="#">Blog<i class="fa fa-angle-down"></i></a>
+								<!-- <li class="dropdown"><a href="#">Blog<i class="fa fa-angle-down"></i></a>
                                     <ul role="menu" class="sub-menu">
                                         <li><a href="blog.html">Blog List</a></li>
 										<li><a href="blog-single.html">Blog Single</a></li>
                                     </ul>
-                                </li> 
+                                </li>  -->
 						<!-- 		<li><a href="404.html">404</a></li> -->
+						
 								<li><a href="{{route('shopping.contactus')}}">Contact</a></li>
+							  <li><a href="{{route('shopping.newsletter')}}">NewsLetter</a></li>
 							</ul>
 						</div>
 					</div>

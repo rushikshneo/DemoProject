@@ -9,11 +9,12 @@ class CategoryController extends Controller
    
     public function index()
     {
-       if (! Gate::allows('category-list')) {
+       if (Gate::allows('category-list')=="false") {
             return abort(401);
-        }
+        }else{
           $category=Category::get();
           return view('pages.CategoryManagement.index', compact('category'));
+       }
     }
 
     public function create()
