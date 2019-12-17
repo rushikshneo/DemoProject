@@ -30,12 +30,16 @@ class OrderController extends Controller
                   $order = order::where('orders.id','=',$id)
                            ->join('products','products.id','orders.product_id')
                            ->join('users','users.id','orders.user_id')
-                           ->select('users.email','users.firstname','users.lastname','products.name','orders.total','orders.id','orders.user_id','orders.product_id','orders.status','orders.payment_method','orders.billing_address1','orders.billing_address2','orders.billing_city','orders.billing_state','orders.billing_country','orders.billing_zip','orders.applied_coupons')->get();
-                           // dd($order);
-        return view('pages.OrderManagement.show',compact('order'));
+                           ->select('users.email','users.firstname','users.lastname','products.name','orders.total','orders.id','orders.user_id','orders.product_id','orders.status','orders.payment_method','orders.billing_address1','orders.billing_address2','orders.billing_city','orders.billing_state','orders.billing_country','orders.billing_zip','orders.applied_coupons','orders.order_status')->get();
+              return view('pages.OrderManagement.show',compact('order'));
+    }
+     public function orderstatus(Request $request, $id)
+    {
+       $order = $request->all();
+       order::where('id','=',$id)->update(['order_status'=>$order['order_status']]);
+       return redirect()->route('order.show',$id)->with('success','The order status is updated.');
     }
 
-    
     public function edit($id)
     {
 
@@ -43,7 +47,6 @@ class OrderController extends Controller
 
     public function update(Request $request, $id)
     {
-        // dd($id);
         $payment = $request->all();
         order::where('id','=',$id)->update(['status'=>$payment['payment_status']]);
            $order = order::where('orders.id','=',$id)
@@ -55,18 +58,18 @@ class OrderController extends Controller
               foreach ($order as $key => $order) {
          foreach ($email as $value) {
             $email_content=[
-                              'email_header'      =>$value->email_header,
-                              'email_main_content'=>$value->email_main_content,
-                              'email_footer'      =>$value->email_footer,
-                              'billing_address1'  =>$order->billing_address1,
-                              'billing_address2'  =>$order->billing_address2,
-                              'billing_city'      =>$order->billing_city,
-                              'billing_state'     =>$order->billing_state,
-                              'billing_country'   =>$order->billing_country,
-                              'billing_zip'       =>$order->billing_zip,
-                              'ordermethod'       =>$order->payment_method,
-                              'order_id'          =>$order->id,
-                              'total'             =>$order->total,
+                              'email_header'      => $value->email_header,
+                              'email_main_content'=> $value->email_main_content,
+                              'email_footer'      => $value->email_footer,
+                              'billing_address1'  => $order->billing_address1,
+                              'billing_address2'  => $order->billing_address2,
+                              'billing_city'      => $order->billing_city,
+                              'billing_state'     => $order->billing_state,
+                              'billing_country'   => $order->billing_country,
+                              'billing_zip'       => $order->billing_zip,
+                              'ordermethod'       => $order->payment_method,
+                              'order_id'          => $order->id,
+                              'total'             => $order->total,
                              
                             ];
                             

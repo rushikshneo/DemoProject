@@ -23,16 +23,7 @@
         <select class="form-control" id="category_id" name="category_id">
           <optgroup  label="Main Category">
             <option value="">Select</option>
-            @foreach($category as $cat)
-               @if ($cat->id == old('parent_id', $products_cat->category_id))
-                selected="selected"
-               @endif
-              @if($cat->parent_id == 0)
-               <option value="{{$cat->id}}" {{( $cat->id == $products_cat->category_id) ? 'selected' :''}}>{{$cat->name}}</option>
-              @else
-                <option value="{{$cat->id}}" {{( $cat->id == $products_cat->category_id) ? 'selected':''}}>-> {{$cat->name}}</option>
-              @endif
-            @endforeach
+             <?php echo  $category_menu ?>
           </optgroup>
         </select>
 
@@ -195,7 +186,7 @@
 
  <!-- <hr> -->
  
-<!--   <div class="form-row">
+  <div class="form-row">
      <div class="col">
           @foreach($product->images as $image)
       <div class="form-group">
@@ -232,7 +223,7 @@
         @endif
    <button type="button" name="add" id="add" class="btn btn-success">Add More</button>
     </div>
-  </div> -->
+  </div>
 
    
 <!-- <div id="extra">

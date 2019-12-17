@@ -64,7 +64,7 @@
 								@else
 								<li><a href="{{route('shopping.account')}}"><i class="fa fa-user"></i>Account</a></li>
 								<li><a href="{{route('shopping.wishlist')}}"><i class="fa fa-star"></i> Wishlist</a></li>
-								<li><a href=""><i class="fa fa-crosshairs"></i> Checkout</a></li>
+								<li><a href="{{route('shopping.checkout')}}"><i class="fa fa-crosshairs"></i> Checkout</a></li>
 								<li><a href="{{route('shopping.cart')}}"><i class="fa fa-shopping-cart"></i>Cart</a></li>
 								<li><a href="{{route('shopping.userlogout')}}"><i class="fa fa-sign-out"></i> Logout</a></li>
 								<!-- 	<li><a href="{{route('shopping.login')}}"><i class="fa fa-lock"></i> Login</a></li> -->

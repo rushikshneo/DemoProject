@@ -235,7 +235,7 @@ button#add {
   <div class="form-row">
     <div class="col">
     <div class="form-group">
-        <label>* Choose Attribute :</label>
+        <label> Choose Attribute :</label>
       <select class="val form-control" name="attri_select[]" id="attri_select_1">
            <option value="">Select</option>
             @foreach($product_attri as $attri)
@@ -256,7 +256,7 @@ button#add {
           <br> {{$errors->first('attri_val')}}
         </div>
         @endif
-        <label for="exampleInputEmail1">* Choose Attribute Value :<br> </label>
+        <label for="exampleInputEmail1"> Choose Attribute Value :<br> </label>
         <select class="form-control" id="attri_val_1"  name="attri_val[]">
             <option value="">Select</option>
         </select>

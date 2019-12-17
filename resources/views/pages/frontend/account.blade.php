@@ -1,36 +1,35 @@
 @extends('pages.frontend.master2')
 @section('content')
 <style type="text/css">
-	.login-form label {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
-}
-a.btn.btn-danger {
-    margin-top: -55px;
-    margin-left: 108px;
-}
-
-
+		.login-form label {
+	    font-family: 'Roboto', sans-serif;
+	    font-weight: 100;
+	}
+	a.btn.btn-danger {
+	    margin-top: -55px;
+	    margin-left: 108px;
+	}
 </style>
  <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
-<section id="form" style="margin-top:0px;"><!--form-->
+<section id="form" style="margin-top:0px;">
 
 		<div class="container">
 			@if ($message = Session::get('success'))
-			<div class="alert alert-success alert-block">
-			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
-			<strong>{{ $message }}</strong>
+			<div class="alert alert-success alert-block" id="success">
+				<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+				<strong>{{ $message }}</strong>
 			</div>
 			@endif
 		    @if ($message = Session::get('error'))
-			<div class="alert alert-danger alert-block">
-			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
-			<strong>{{ $message }}</strong>
+			<div class="alert alert-danger alert-block" id="error">
+				<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
+				<strong>{{ $message }}</strong>
 			</div>
 			@endif
+			
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-1">
-					<div class="login-form"><!--login form-->
+					<div class="login-form">
 						<h2>User Account </h2>
 						<form action="{{route('shopping.userdetails')}}" method="POST">
 							@csrf
@@ -43,20 +42,18 @@ a.btn.btn-danger {
 							<input type="email"  name="email" value="{{$info->email}}" placeholder="Email Address"/>
 							<button type="submit" class="btn btn-default">Update</button>
 						</form>
-					</div><!--/login form-->
+					</div>
 				</div>
-				<!-- <div class="col-sm-1">
-					<h2 class="or">OR</h2>
-				</div> -->
+				
 				<div class="col-sm-4">
-					<div class="signup-form"><!--sign up form-->
+					<div class="signup-form">
 						<h2>Address</h2>
 						 <a href="{{route('shopping.address',$info->id)}}" class="btn btn-primary">Add Address</a><br><br>
 							  @foreach($info['user_addresses'] as $address)
 							 <div class="card">
                           <div class="container">
                           	@if($address->defaultaddress == 1)
-							 <input  type="radio" id="{{$address->id}}" name="defaultaddress" 
+							 <input  type="radio" id="{{$address->id}}" name="defaultaddress"
 							   value="1" class="radio" {{($address->defaultaddress == 1) ? 'checked' : '' }} >
 							 @else
 							   <input  type="radio" id="{{$address->id}}" name="defaultaddress" value="0" class="radio" {{($address->defaultaddress == 0) ? 'unchecked' : '' }} >
@@ -72,27 +69,25 @@ a.btn.btn-danger {
 							      <a type="submit" class="btn btn-danger" value="Delete"
 							             onclick="return confirm('Are you sure?')">Delete Address</a>
 							    </form>
-
 							</div>
 							</div><br>
 						    @endforeach
-					</div><!--/sign up form-->
+					</div>
 				</div>
 					
-					<div class="signup-form"><!--sign up form-->
+					<div class="signup-form">
 						<h2>My Orders</h2>
 				    <a href="{{route('shopping.userorder',
 				    $info->id)}}" class="btn btn-primary">My orders</a>
-					</div><!--/sign up form-->
+					</div>
 					  @endforeach
 			</div>
 		</div>
-	</section><!--/form-->
+	</section>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$(document).on('change','.radio',function() {
 			 var defaultaddress_id  = this.id;
-			  
 			   $.ajax({
         type: "GET",
         url: "/makedeafult/",
@@ -101,8 +96,16 @@ a.btn.btn-danger {
               }
           }).done(
           	      alert("Default address is updated")
-      	        );
+      	         );
 		});
+
+		setTimeout(function(){
+		$('#error').hide()
+		}, 3000);
+
+		setTimeout(function(){
+		$('#success').hide()
+		}, 3000);
 	});
 	
 </script>

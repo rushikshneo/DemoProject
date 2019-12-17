@@ -11,4 +11,10 @@ class product_categories extends Model
  public function product_categories(){
     	return $this->belongsTo('App\Product');
     }   
+     public function product_cat(){
+        return $this->hasMany('App\Product','id');
+     }
+      public function product_image(){
+        return $this->hasMany('App\product_image','product_id');
+     }
 }

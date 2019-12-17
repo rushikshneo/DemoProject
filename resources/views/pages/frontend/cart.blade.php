@@ -10,7 +10,7 @@
 	 <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 		<div class="container">
 		@if ($message = Session::get('success'))
-		<div class="alert alert-success alert-block">
+		<div class="alert alert-success alert-block" id="success">
 		    <button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>
 		  </div>
@@ -53,7 +53,9 @@
 								<div class="cart_quantity_button">
 									<a class="cart_quantity_up" href="{{route('shopping.addtocart',$cartadded->id)}}"> + </a>
 									<input class="cart_quantity_input" type="text" name="quantity" value="{{$cartadded->quantity}}" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
+									@if($cartadded->quantity != 1)
+									<a class="cart_quantity_down" href="{{route('shopping.updatecart',$cartadded->id)}}"> - </a>
+									@endif
 								</div>
 							</td>
 							<td class="cart_total">
@@ -195,5 +197,13 @@
      	   alert(success.message);
           });  
     });
+
+	   setTimeout(function(){
+		$('#error').hide()
+		}, 3000);
+
+		setTimeout(function(){
+		$('#success').hide()
+		}, 3000)
 </script>
 @endsection

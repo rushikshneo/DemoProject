@@ -44,10 +44,10 @@ class PaypalController extends Controller
         $payer = new Payer();
                 $payer->setPaymentMethod('paypal');
         $item_1 = new Item();
-        $item_1->setName('Item 1') /** item name **/
+        $item_1->setName('Item 1')
                     ->setCurrency('USD')
                     ->setQuantity(1)
-                    ->setPrice($request->get('amount')); /** unit price **/
+                    ->setPrice($request->get('amount')); 
         $item_list = new ItemList();
                 $item_list->setItems(array($item_1));
         $amount = new Amount();
@@ -58,7 +58,7 @@ class PaypalController extends Controller
                     ->setItemList($item_list)
                     ->setDescription('Your transaction description');
         $redirect_urls = new RedirectUrls();
-                $redirect_urls->setReturnUrl(URL::route('shopping.status')) /** Specify return URL **/
+                $redirect_urls->setReturnUrl(URL::route('shopping.status')) 
                     ->setCancelUrl(URL::route('shopping.status'));
         $payment = new Payment();
                 $payment->setIntent('Sale')
@@ -106,7 +106,6 @@ class PaypalController extends Controller
              // return Redirect::route('shopping.paypal');
       }
       $payment = Payment::get($payment_id, $this->_api_context);
-      // dd($payment);
              $execution = new PaymentExecution();
              $execution->setPayerId(Input::get('PayerID'));
              $result = $payment->execute($execution, $this->_api_context);

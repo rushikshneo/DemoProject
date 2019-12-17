@@ -10,5 +10,8 @@ class product_image extends Model
 
    public function images(){
     	return $this->belongsTo('App\Product');
+    } 
+     public function Product_images(){
+        return $this->belongsTo('App\product_image');
     }    
 }

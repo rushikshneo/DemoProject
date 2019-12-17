@@ -1,7 +1,7 @@
 @extends('pages.frontend.master2')
 @section('content') 
 
-
+ <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 <section id="slider"><!--slider-->
 		<div class="container">
 			<div class="row">
@@ -48,9 +48,8 @@
 					<div class="left-sidebar">
 						<h2>Category</h2>
 						 <div class="panel-group category-products" id="accordian">
-							 <?php echo$category_menu; ?>	 
+							 <?php echo $category_menu; ?>
 						</div><!--/category-products-->
-					
 						<div class="brands_products"><!--brands_products-->
 							<h2>Brands</h2>
 							<div class="brands-name">
@@ -65,7 +64,6 @@
 								</ul>
 							</div>
 						</div><!--/brands_products-->
-						
 						<div class="price-range"><!--price-range-->
 							<h2>Price Range</h2>
 							<div class="well text-center">
@@ -73,16 +71,11 @@
 								 <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
 							</div>
 						</div><!--/price-range-->
-						
 						<div class="shipping text-center"><!--shipping-->
 							<img src="{{asset('images/images/home/shipping.jpg')}}" alt="" />
 						</div><!--/shipping-->
-					
 					</div>
 				</div>
-
-			<!-- 		
-				 -->
 				<div class="col-sm-9 padding-right">
 					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Features Items</h2>
@@ -119,18 +112,13 @@
 							</div>
 						</div>
 						@endforeach
-
 					</div><!--features_items-->
-					
-				
 				<div class='category-tab'>
-
                 </div>
-					
 					<div class="recommended_items"><!--recommended_items-->
 					@if ($message = Session::get('success'))
 						<div class="alert alert-success alert-block">
-							<button type="button" class="close" data-dismiss="alert" style="color: white;">×</button> 
+							<button type="button" class="close" data-dismiss="alert" style="color: white;">×</button>
 							<strong>{{ $message }}</strong>
 						</div>
 					@endif
@@ -175,12 +163,19 @@
 </section>
 
 <script type="text/javascript">
- $(document).ready(function(){      
-       $('#collapse_sub_cat').hide();
-      $('#collapse_sub').click(function(){  
-       $('#collapse_sub_cat').show();  
-       });
-   });
+	// $('.minus').hide();
+ // $('.plus').click(function(){
+ //    var id = $(this).attr('id');
+ //       $('#'+id).hide();
+ //   // var ca = $(this).attr('class');
+ //   //  $('.'+ca).show();
+	//   $('.minus').click(function(){
+	//   	var id = $(this).attr('id');
+	//     $('.plus').show();
+	//     $('#'+id).hide();
+	//  });
+ // });
+ // $('.plus').hide();
 </script>
 @endsection
 	

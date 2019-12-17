@@ -11,7 +11,7 @@
    <script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 		<div class="container">
 				@if ($message = Session::get('success'))
-		<div class="alert alert-success alert-block">
+		<div class="alert alert-success alert-block" id="success">
 		    <button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>
 		  </div>
@@ -154,9 +154,11 @@
 							</td>
 							<td class="cart_quantity">
 								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href=""> + </a>
-									<input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
+									<a class="cart_quantity_up" href="{{route('shopping.addtocart',$product->id)}}"> + </a>
+									<input class="cart_quantity_input" type="text" name="quantity" value="{{$product->quantity}}" autocomplete="off" size="2">
+									@if($product->quantity != 1)
+									<a class="cart_quantity_down" href="{{route('shopping.updatecart',$product->id)}}"> - </a>
+									@endif
 								</div>
 							</td>
 							<td class="cart_total">
@@ -214,6 +216,7 @@
 			
 	</div>
 	</section>
+
   <script type="text/javascript">
   	$(document).on('change','.radio',function() {
 	  var defaultaddress_id  = this.id;
@@ -228,6 +231,14 @@
            location.reload()
 		  );
 		});
+
+  	  setTimeout(function(){
+		$('#error').hide()
+		}, 3000);
+
+		setTimeout(function(){
+		$('#success').hide()
+		}, 3000);
   	// $(document).on('submit','#from',function() {
 
   	// });

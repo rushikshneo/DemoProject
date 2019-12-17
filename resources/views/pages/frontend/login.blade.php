@@ -5,16 +5,17 @@
 		color: red;
 	}
 </style>
+<script src="http://demo.itsolutionstuff.com/plugin/jquery.js"></script>
 <section id="form" style="margin-top:-10px; margin-bottom:50px "><!--form-->
 		<div class="container">
 			@if ($message = Session::get('success'))
-			<div class="alert alert-success alert-block">
+			<div class="alert alert-success alert-block" id="success">
 			<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>
 			</div>
 			@endif
 			@if ($message = Session::get('error'))
-			<div class="alert alert-danger alert-block">
+			<div class="alert alert-danger alert-block" id="error">
 		<button type="button" class="close" data-dismiss="alert" style="color: red;">×</button> 
 			<strong>{{ $message }}</strong>
 			</div>
@@ -34,7 +35,8 @@
 							<button type="submit" class="btn btn-default">Login</button>
 
 						</form>
-						<!--  <a href="{{ url('/login/facebook') }}" class="btn btn-facebook" class="btn btn-facebook"><i class="fa fa-facebook"></i> Facebook</a> -->
+						 <a href="{{ url('auth/facebook') }}"  class="btn btn-primary" style="background: #0c75f3;"><i class="fa fa-facebook"></i>  Login with Facebook</a>
+						<!-- <a href="{{ url('auth/google') }}" ><strong>Login With Google</strong> -->
      
 					</div><!--/login form-->
 				</div>
@@ -56,10 +58,19 @@
 							<button type="submit" class="btn btn-defaul " style="
 							margin-top: 20px;">Signup</button>
 						</form>
-					</div><!--/sign up form-->
+					</div>
 				</div>
 			</div>
 		</div>
-	</section><!--/form-->
-
+	</section>
+<script type="text/javascript">
+	$(document).ready(function(){
+		setTimeout(function(){
+		$('#error').hide()
+		}, 3000);
+		setTimeout(function(){
+		$('#success').hide()
+		}, 3000)
+     });
+</script>
 @endsection

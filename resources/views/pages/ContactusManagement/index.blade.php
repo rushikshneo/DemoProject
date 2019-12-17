@@ -62,12 +62,15 @@
               Not Replied
           </td>
           <td>
-	          <a class="btn btn-info btn-sm" href="{{route('contactus.edit',$cont->id)}}">Reply Back</a>
+            <a class="btn btn-info btn-sm" href="{{route('contactus.edit',$cont->id)}}">Reply</a>
           </td>
             @else
             <td>
               Replied
             </td>
+          <td>
+	          <a class="btn btn-info btn-sm" href="{{route('contactus.edit',$cont->id)}}">Reply Back</a>
+          </td>
             @endif
            </tr>
          @endforeach

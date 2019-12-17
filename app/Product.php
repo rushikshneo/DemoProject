@@ -25,5 +25,11 @@ class Product extends Model
     }  
     public function userwishlist(){
         return $this->hasMany('App\userwishlist','product_id');
-     }   
+     } 
+      public function Product(){
+        return $this->belongsTo('App\product_categories');
+    } 
+     // public function category_sub(){
+     //    return $this->hasMany('App\Category','product_id');
+     // }     
 }

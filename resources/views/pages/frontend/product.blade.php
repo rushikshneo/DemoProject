@@ -92,12 +92,16 @@
 								<img src="images/product-details/rating.png" alt="" />
 								<span>
 									<span> &#x20b9;{{$pro_det->price}}</span>
-									<label>Quantity:</label>
-									<input type="text" value="1" />
-									<a href="{{route('shopping.addtocart',$pro_det->id)}}" type="button" class="btn btn-fefault cart">
-										<i class="fa fa-shopping-cart"></i>
-										Add to cart
-									</a>
+									<form method="POST" action="{{route('shopping.addtocart',$pro_det->id)}}">
+									@csrf 
+										<label>Quantity:</label>
+										<input type="text" value="1" name="quantity" />
+										<!-- href="{{route('shopping.addtocart',$pro_det->id)}}" -->
+										<button type="submit" class="btn btn-fefault cart">
+											<i class="fa fa-shopping-cart"></i>
+											Add to cart
+										</button>
+									</form>
 								</span>
 								<p><b>Availability:</b> In Stock</p>
 								<p><b>Condition:</b> New</p>

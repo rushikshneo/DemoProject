@@ -7,8 +7,6 @@
 </style>
 <section id="form" style="margin-top:0px;">
 		<div class="container">
-
-
 			<div class="row">
 					<div class="login-form">
 					<h2>Add Address </h2>

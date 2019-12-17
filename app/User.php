@@ -14,7 +14,7 @@ class User extends Authenticatable
 
   
     protected $fillable = [
-        'firstname','lastname', 'email', 'password','password_confirmation','role','status'
+        'firstname','lastname', 'email', 'password','password_confirmation','role','status','facebook_id','google_id'
     ];
 
   
@@ -45,5 +45,18 @@ public function is_active(){
 
    public function user_addresses(){
         return $this->hasMany(user_addresses::class);
+    }
+
+     public function addNew($input)
+    {
+        $check = static::where('facebook_id',$input['facebook_id'])->first();
+
+
+        if(is_null($check)){
+            return static::create($input);
+        }
+
+
+        return $check;
     }
 }

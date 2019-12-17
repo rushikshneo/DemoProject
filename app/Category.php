@@ -9,4 +9,7 @@ class Category extends Model
    public function categories(){
     	return $this->hasMany('App\Category','parent_id');
     }    
+    //  public function Product(){
+    // 	return $this->belongsTo('App\Product');
+    // }
 }
