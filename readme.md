@@ -1,6 +1,7 @@
 <h1>DEMO PROJECT (LARAVEL)</h1>
 This is Shopping cart project with admin panel this where we can able to manage all frontend data as well as backend with all
 functionalities.
+<p>
 It Includes (BACKEND) 
 1- user management
 2- order management
@@ -8,4 +9,4 @@ It Includes (BACKEND)
 4 -coupon management
 5 -email templet
 6 -contact us management
-7 -NewsLetter 
+7 -NewsLetter </p>
